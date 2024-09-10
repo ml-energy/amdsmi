@@ -1,4 +1,4 @@
-name: Publish to PyPI on Tag
+name: Publish to TestPyPI on Tag
 
 on:
   push:
@@ -20,7 +20,17 @@ jobs:
       with:
         python-version: '3.9'
 
-    - name: Run push_to_pypi.sh
+    - name: Install dependencies
       run: |
-        chmod +x ./scripts/push_to_pypi.sh
-        ./scripts/push_to_pypi.sh ${{ github.ref_name }}
+        pip install build twine
+
+    - name: Build distribution
+      run: |
+        python -m build
+
+    - name: Publish to TestPyPI
+      env:
+        TWINE_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
+      run: |
+        twine upload --repository-url https://test.pypi.org/legacy/ dist/*
