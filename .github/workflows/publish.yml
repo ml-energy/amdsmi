@@ -1,0 +1,26 @@
+name: Publish to PyPI on Tag
+
+on:
+  push:
+    tags:
+      - '*'  # Triggers on any tag
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.ref }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Run push_to_pypi.sh
+      run: |
+        chmod +x ./scripts/push_to_pypi.sh
+        ./scripts/push_to_pypi.sh ${{ github.ref_name }}
