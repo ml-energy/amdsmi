@@ -1243,7 +1243,7 @@ def amdsmi_get_gpu_asic_info(
         "device_id": asic_info.device_id,
         "rev_id": asic_info.rev_id,
         "asic_serial": asic_info.asic_serial.decode("utf-8"),
-        "oam_id": asic_info.oam_id
+        "xgmi_physical_id": asic_info.xgmi_physical_id
     }
 
 
@@ -1308,8 +1308,6 @@ def amdsmi_get_gpu_cache_info(
     for cache_index in range(cache_info.num_cache_types):
         cache_size = cache_info.cache[cache_index].cache_size_kb
         cache_level = cache_info.cache[cache_index].cache_level
-        max_num_cu_shared = cache_info.cache[cache_index].max_num_cu_shared
-        num_cache_instance = cache_info.cache[cache_index].num_cache_instance
         cache_flags = cache_info.cache[cache_index].flags
         data_cache = bool(cache_flags & amdsmi_wrapper.CACHE_FLAGS_DATA_CACHE)
         inst_cache = bool(cache_flags & amdsmi_wrapper.CACHE_FLAGS_INST_CACHE)
@@ -1317,13 +1315,10 @@ def amdsmi_get_gpu_cache_info(
         simd_cache = bool(cache_flags & amdsmi_wrapper.CACHE_FLAGS_SIMD_CACHE)
         cache_info_dict[f"cache {cache_index}"] = {"cache_size": cache_size,
                                                    "cache_level": cache_level,
-                                                   "max_num_cu_shared": max_num_cu_shared,
-                                                  "num_cache_instance": num_cache_instance}
-        if (data_cache): cache_info_dict[f"cache {cache_index}"]["data_cache"] = data_cache
-        if (inst_cache): cache_info_dict[f"cache {cache_index}"]["inst_cache"] = inst_cache
-        if (cpu_cache): cache_info_dict[f"cache {cache_index}"]["cpu_cache"] = cpu_cache
-        if (simd_cache): cache_info_dict[f"cache {cache_index}"]["simd_cache"] = simd_cache
-
+                                                   "data_cache": data_cache,
+                                                   "instruction_cache": inst_cache,
+                                                   "cpu_cache": cpu_cache,
+                                                   "simd_cache": simd_cache}
 
     if cache_info_dict == {}:
         raise AmdSmiLibraryException(amdsmi_wrapper.AMDSMI_STATUS_NO_DATA)
@@ -1629,7 +1624,8 @@ def amdsmi_get_gpu_driver_info(
 
     return {
         "driver_name": info.driver_name.decode("utf-8"),
-        "driver_version": info.driver_version.decode("utf-8")
+        "driver_version": info.driver_version.decode("utf-8"),
+        "driver_date": info.driver_date.decode("utf-8")
     }
 
 
@@ -3248,7 +3244,7 @@ def amdsmi_get_gpu_metrics_temp_hotspot(
             processor_handle, amdsmi_wrapper.amdsmi_processor_handle
         )
 
-    hotspot_value = ctypes.c_uint16()
+    hotspot_value = ctypes.c_int16()
     _check_res(
         amdsmi_wrapper.amdsmi_get_gpu_metrics_temp_hotspot(
             processor_handle, ctypes.byref(hotspot_value)
@@ -3269,7 +3265,7 @@ def amdsmi_get_gpu_metrics_temp_mem(
             processor_handle, amdsmi_wrapper.amdsmi_processor_handle
         )
 
-    mem_value = ctypes.c_uint16()
+    mem_value = ctypes.c_int16()
     _check_res(
         amdsmi_wrapper.amdsmi_get_gpu_metrics_temp_mem(
             processor_handle, ctypes.byref(mem_value)
@@ -3290,7 +3286,7 @@ def amdsmi_get_gpu_metrics_temp_vrsoc(
             processor_handle, amdsmi_wrapper.amdsmi_processor_handle
         )
 
-    vrsoc_value = ctypes.c_uint16()
+    vrsoc_value = ctypes.c_int16()
     _check_res(
         amdsmi_wrapper.amdsmi_get_gpu_metrics_temp_vrsoc(
             processor_handle, ctypes.byref(vrsoc_value)
@@ -3758,7 +3754,7 @@ def amdsmi_get_gpu_metrics_vcn_activity(
         )
     )
 
-    return vcn_activity_value
+    return [vcn_activity.value for vcn_activity in vcn_activity_value]
 
 
 def amdsmi_get_gpu_metrics_xgmi_read_data(
@@ -3815,9 +3811,7 @@ def amdsmi_get_gpu_metrics_curr_gfxclk(
         )
     )
 
-    print([curr_gfxclk for curr_gfxclk in current_gfxclk_value])
-
-    return [curr_gfxclk for curr_gfxclk in current_gfxclk_value]
+    return [curr_gfxclk.value for curr_gfxclk in current_gfxclk_value]
 
 
 def amdsmi_get_gpu_metrics_curr_socclk(
@@ -3885,7 +3879,7 @@ def amdsmi_get_gpu_metrics_temp_edge(
         processor_handle, amdsmi_wrapper.amdsmi_processor_handle
         )
 
-    edge_value = ctypes.c_uint16()
+    edge_value = ctypes.c_int16()
 
     _check_res(
         amdsmi_wrapper.amdsmi_get_gpu_metrics_temp_edge(
@@ -3907,7 +3901,7 @@ def amdsmi_get_gpu_metrics_temp_vrgfx(
         processor_handle, amdsmi_wrapper.amdsmi_processor_handle
         )
 
-    vrgfx_value = ctypes.c_uint16()
+    vrgfx_value = ctypes.c_int16()
 
     _check_res(
         amdsmi_wrapper.amdsmi_get_gpu_metrics_temp_vrgfx(
@@ -3929,7 +3923,7 @@ def amdsmi_get_gpu_metrics_temp_vrmem(
         processor_handle, amdsmi_wrapper.amdsmi_processor_handle
         )
 
-    vrmem_value = ctypes.c_uint16()
+    vrmem_value = ctypes.c_int16()
 
     _check_res(
         amdsmi_wrapper.amdsmi_get_gpu_metrics_temp_vrmem(
