@@ -25,6 +25,7 @@ jobs:
         pip install build twine
 
     - name: Build distribution
+      working-directory: ./py-interface
       run: |
         python -m build
 

@@ -1,6 +1,6 @@
 #!/usr/bin bash
 
-# set -ev
+set -ev
 
 function tag_already_published {
     tag_name=$1
@@ -31,7 +31,7 @@ function tag_already_published {
 function fix_amdsmi_version {
     # requires amdsmi version
     local version=$1
-    cd py-interface || return 1
+    cd py-interface
 
     # Fill in versions
     if compgen -G "*.in" > /dev/null; then
@@ -45,7 +45,7 @@ function fix_amdsmi_version {
     sed -i '' 's/libamd_smi_cwd = Path.cwd()/libamd_smi_cwd = Path(os.environ["ROCM_PATH"]) \/ "lib"/g' amdsmi_wrapper.py
 
     # Copy over the license file
-    cp ../LICENSE . || return 1
+    cp ../LICENSE . 
     sed -i '' 's/amdsmi\/LICENSE/LICENSE/g' pyproject.toml
 
     # Prepend notice to the beginning of README.md
@@ -56,18 +56,22 @@ function fix_amdsmi_version {
 
     # Create package directory
     mkdir amdsmi
-    mv *.py amdsmi || return 1
+    mv *.py amdsmi
 
-    cd .. || return 1
+    cd ..
 }
 
 function clone_and_fix_amdsmi {
     local name=$1
     local commit=$2
 
-    # Clone amdsmi with a specific commit using shallow clone (depth 1)
-    git clone --branch "$commit" --depth 1 https://github.com/ROCm/amdsmi.git || return
-    cd amdsmi || return
+    # TODO: clone amdsmi -b with commit so you don't need to check out
+    # fetch depths = make it 0 or 1 
+    git clone https://github.com/ROCm/amdsmi.git
+    cd amdsmi
+
+    # checkout the commit
+    git checkout $commit
 
     # initialize version variable
     local version=""
@@ -88,13 +92,17 @@ function clone_and_fix_amdsmi {
     cd ..
 
     # move created py-interface into current directory
-    mv ./amdsmi/py-interface ./py-interface || return
+    mv ./amdsmi/py-interface ./py-interface
 
     # remove amdsmi
     rm -rf amdsmi
 
-    git tag "$version" || return
-    git push origin "$version" || return
+    # Add and commit py-interface
+    git add py-interface
+    git commit -m "Add py-interface for version $version"
+
+    git tag "$version"
+    git push origin "$version"
 
     # remove the py-interface directory
     rm -rf py-interface
@@ -130,7 +138,7 @@ echo "$api_output" | jq -c '.[]' | while IFS= read -r item; do
   commit_url=$(echo "$item" | jq -r '.commit.url')
   commit_id=${commit_url##*/}
 
-  echo "Processing $name"
+  echo "Processing $name with commit $commit_id"
 
   # Call function that takes in name and commit id
   clone_and_publish_tags "$name" "$commit_id"
