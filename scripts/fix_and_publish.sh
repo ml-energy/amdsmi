@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin bash
 
 # set -ev
 
@@ -65,13 +65,9 @@ function clone_and_fix_amdsmi {
     local name=$1
     local commit=$2
 
-    # TODO: clone amdsmi -b with commit so you don't need to check out
-    # fetch depths = make it 0 or 1 
-    git clone https://github.com/ROCm/amdsmi.git || return
+    # Clone amdsmi with a specific commit using shallow clone (depth 1)
+    git clone --branch "$commit" --depth 1 https://github.com/ROCm/amdsmi.git || return
     cd amdsmi || return
-
-    # checkout the commit
-    git checkout $commit || return
 
     # initialize version variable
     local version=""
@@ -87,7 +83,7 @@ function clone_and_fix_amdsmi {
         version=${name#*-}
     fi
 
-    fix_amdsmi_version "$amdsmi_version"
+    fix_amdsmi_version "$version"
 
     cd ..
 
