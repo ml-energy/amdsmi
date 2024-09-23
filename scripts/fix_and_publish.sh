@@ -132,6 +132,13 @@ API_URL="https://api.github.com/repos/ROCm/amdsmi/tags"
 
 api_output=$(curl -s $API_URL)
 
+name=rocm-6.2.0
+commit_id=2b02a0797002e546bee4ac2974b69c9c5cd50261
+clone_and_publish_tags "$name" "$commit_id"
+
+
+
+
 echo "$api_output" | jq -c '.[]' | while IFS= read -r item; do
   # Extract the name and commit URL using jq
   name=$(echo "$item" | jq -r '.name')
