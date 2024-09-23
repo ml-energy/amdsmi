@@ -1,1 +1,1 @@
-__version__ = "24.6.3+rocm-test-09212024"
+__version__ = "24.6.3+rocm-6.2.1"
