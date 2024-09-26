@@ -14,5 +14,5 @@ jobs:
 
       - name: Fix and publish, iff there exists a tag in rocm/amdsmi that is not here.
         run: |
-            chmod +x ./scripts/fix_and_publish.sh
-            ./scripts/fix_and_publish.sh
+            chmod +x ./scripts/fix.sh
+            ./scripts/fix.sh
