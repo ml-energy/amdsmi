@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ev
+
 # Check if a tag is already published in this repo.
 function tag_already_published {
     version_number=$1
