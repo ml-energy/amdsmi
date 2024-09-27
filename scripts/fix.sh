@@ -64,6 +64,7 @@ function clone_and_fix_amdsmi {
     cd ..
 
     # move created py-interface into current directory, overwrite previous py-interface
+    rm -rf ./py-interface
     mv -f ./amdsmi/py-interface ./py-interface
 
     # remove amdsmi

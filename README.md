@@ -1,4 +1,4 @@
-# Python Bindings for AMDSMI
+# 🐍 Python Bindings for AMDSMI
 
 Community-maintained Python bindings for [AMDSMI](https://github.com/ROCm/amdsmi).
 
@@ -9,20 +9,18 @@ For the source code and API documentation, please see [`py-interface/README.md`]
 >
 > When AMD intends to officially maintain the `amdsmi` package on PyPI, we are happy to transfer ownership. Please contact the current maintainers Parth Raut <praut@umich.edu> and Jae-Won Chung <jwnchung@umich.edu>.
 
-## Installation
+## 🚀 Installation
 
 ```
 pip install amdsmi
 ```
 
-## Versioning
+Ensure you have the correct ROCm version associated with the version of the amdsmi package, and ROCM_PATH is set correctly. Failure to do so will cause ```import amdsmi``` to fail.
 
-Whenever a new tag is published to the official `amdsmi` repository, we run a simple script to checkout the `py-interface` directory of the tag and publish it to PyPI.
+## 📦 Versioning
 
-The versioning of the AMDSMI Python package aligns with both `amdsmi` and ROCm versions to maintain consistency. The `amdsmi` version serves as the primary version, while the ROCm version is appended as a local version specifier (The part after the `+` sign). 
+AMDSMI versions tightly integrated with ROCm versions. Thus, we recommend users to use the AMDSMI Python package version whose version corresponds to their current ROCm version.
 
-For example:
-- When the tag `amdsmi_pkg_ver-24.6.0` is pushed to `ROCm/amdsmi`, the Python package version will be `24.6.0`.
-- When the tag `rocm-6.2.1` is pushed to `ROCm/amdsmi`, the Python package version will be `24.6.3+rocm-6.2.1`.
+Whenever a new release is published to the official `amdsmi` repository, we run a simple script to checkout the `py-interface` directory of the tag and publish it to PyPI.
 
-AMDSMI versions tightly integrated with ROCm versions. Thus, we recommend users to use the AMDSMI Python package version whose local version specifier corresponds to their current ROCm version.
+The versioning of the AMDSMI Python package aligns with the published ROCm version in [AMDSMI Releases](https://github.com/ROCm/amdsmi/releases).
