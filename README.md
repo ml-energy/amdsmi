@@ -2,12 +2,13 @@
 
 Community-maintained Python bindings for [AMDSMI](https://github.com/ROCm/amdsmi).
 
-For the source code and API documentation, please see [`py-interface/README.md`](/py-interface).
+Whenever a new [release](https://github.com/ROCm/amdsmi/releases) is published to the official AMDSMI repository, we run a simple script to checkout the `py-interface` directory of the tag and push it to this repository and PyPI.
+For the source code and API documentation, please see [`py-interface`](/py-interface).
 
-> [!IMPORTANT]
+> [!NOTE]
 > At this time, there are no official Python bindings for AMDSMI on PyPI. Rather, bindings are distributed together with ROCm, which complicates dependency management and installation. Thus, we created this community-maintained binding package.
 >
-> When AMD intends to officially maintain the `amdsmi` package on PyPI, we are happy to transfer ownership. Please contact the current maintainers Parth Raut <praut@umich.edu> and Jae-Won Chung <jwnchung@umich.edu>.
+> When AMD intends to officially maintain the `amdsmi` package on PyPI, we are happy to transfer ownership. Please contact the current maintainers Parth Raut (<praut@umich.edu>) and Jae-Won Chung (<jwnchung@umich.edu>).
 
 ## 🚀 Installation
 
@@ -15,12 +16,20 @@ For the source code and API documentation, please see [`py-interface/README.md`]
 pip install amdsmi
 ```
 
-Ensure you have the correct ROCm version associated with the version of the amdsmi package, and ROCM_PATH is set correctly. Failure to do so will cause ```import amdsmi``` to fail.
+> [!IMPORTANT]
+> 1. Ensure your ROCm version matches the `amdsmi` package version. For instance, if you are using ROCm 6.2.1, run `pip install amdsmi==6.2.1`. (See [Versioning](#-versioning) for detais.)
+> 2. Ensure your `ROCM_PATH` environment variable is set correctly. The Python package will look for `libamd_smi.so` inside `ROCM_PATH` on `import amdsmi`.
 
 ## 📦 Versioning
 
-AMDSMI versions tightly integrated with ROCm versions. Thus, we recommend users to use the AMDSMI Python package version whose version corresponds to their current ROCm version.
+AMDSMi seems to have two parallel release strategies:  
+1. AMDSMI package releases, based on year, month, and revision (e.g., 24.5.0).
+2. ROCm-based releases, which is released whenever a new ROCm version is released (e.g., 6.2.2).
 
-Whenever a new release is published to the official `amdsmi` repository, we run a simple script to checkout the `py-interface` directory of the tag and publish it to PyPI.
+At the moment, we adopt the second ROCm-based versioning strategy. So, the `amdsmi` package version is identical to the ROCm version the bindings are released against.
 
-The versioning of the AMDSMI Python package aligns with the published ROCm version in [AMDSMI Releases](https://github.com/ROCm/amdsmi/releases).
+See [here](https://pypi.org/project/amdsmi/#history) for a full list of releases.
+
+## ❗ Bug Reports
+
+Most issues would be better off reported directly to [ROCm/amdsmi](https://github.com/ROCm/amdsmi). If you believe the bug is specific to the bindings package, please file an issue on this repository.
