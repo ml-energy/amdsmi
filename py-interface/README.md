@@ -1,4 +1,4 @@
-This is an unofficial distribution of the official Python wrapper for amdsmi.
+This is an unofficial distribution of the official Python wrapper for amdsmi. 
 
 Dear AMD: Please contact Jae-Won Chung <jwnchung@umich.edu> to take over the repository when you would like to distribute official bindings under this project name.
 
