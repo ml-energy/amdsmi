@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2022 Advanced Micro Devices. All rights reserved.
+# Copyright (C) 2023 Advanced Micro Devices. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -27,7 +27,6 @@ from collections.abc import Iterable
 
 from . import amdsmi_wrapper
 from .amdsmi_exception import *
-
 
 class AmdSmiInitFlags(IntEnum):
     ALL_DEVICES = amdsmi_wrapper.AMDSMI_INIT_ALL_DEVICES
@@ -292,18 +291,6 @@ class AmdSmiUtilizationCounterType(IntEnum):
     COARSE_GRAIN_MEM_ACTIVITY = amdsmi_wrapper.AMDSMI_COARSE_GRAIN_MEM_ACTIVITY
 
 
-class AmdSmiSwComponent(IntEnum):
-    DRIVER = amdsmi_wrapper.AMDSMI_SW_COMP_DRIVER
-
-
-class AmdSmiIoLinkType(IntEnum):
-    UNDEFINED = amdsmi_wrapper.AMDSMI_IOLINK_TYPE_UNDEFINED
-    PCIEXPRESS = amdsmi_wrapper.AMDSMI_IOLINK_TYPE_PCIEXPRESS
-    XGMI = amdsmi_wrapper.AMDSMI_IOLINK_TYPE_XGMI
-    NUMIOLINKTYPES = amdsmi_wrapper.AMDSMI_IOLINK_TYPE_NUMIOLINKTYPES
-    SIZE = amdsmi_wrapper.AMDSMI_IOLINK_TYPE_SIZE
-
-
 class AmdSmiEventReader:
     def __init__(
         self, device_handle: amdsmi_wrapper.amdsmi_device_handle, *event_types
@@ -498,8 +485,7 @@ def amdsmi_get_socket_handles() -> List[amdsmi_wrapper.amdsmi_socket_handle]:
                       socket_count.value)()
     _check_res(
         amdsmi_wrapper.amdsmi_get_socket_handles(
-            ctypes.byref(socket_count), socket_handles
-        )
+            ctypes.byref(socket_count), socket_handles)
     )
     sockets = [
         amdsmi_wrapper.amdsmi_socket_handle(socket_handles[sock_idx])
@@ -513,11 +499,14 @@ def amdsmi_get_socket_info(socket_handle):
     if not isinstance(socket_handle, amdsmi_wrapper.amdsmi_socket_handle):
         raise AmdSmiParameterException(
             socket_handle, amdsmi_wrapper.amdsmi_socket_handle)
+    socket_info = ctypes.create_string_buffer(128)
 
-    return {
-        "name": ""
-    }
+    _check_res(
+        amdsmi_wrapper.amdsmi_get_socket_info(
+            socket_handle, socket_info, ctypes.c_size_t(128))
+    )
 
+    return socket_info.value.decode()
 
 def amdsmi_get_device_handles() -> List[amdsmi_wrapper.amdsmi_device_handle]:
     socket_handles = amdsmi_get_socket_handles()
@@ -631,7 +620,11 @@ def amdsmi_get_power_cap_info(
         )
     )
 
-    return {"dpm_cap": power_info.dpm_cap, "power_cap": power_info.power_cap}
+    return {"power_cap": power_info.power_cap,
+            "dpm_cap": power_info.dpm_cap,
+            "power_cap_default": power_info.default_power_cap,
+            "min_power_cap": power_info.min_power_cap,
+            "max_power_cap": power_info.max_power_cap}
 
 
 def amdsmi_get_caps_info(
@@ -677,10 +670,10 @@ def amdsmi_get_vbios_info(
 
     return {
         "name": vbios_info.name.decode("utf-8"),
-        "vbios_version": vbios_info.vbios_version,
+        "vbios_version_string": vbios_info.vbios_version_string.decode("utf-8"),
         "build_date": vbios_info.build_date.decode("utf-8"),
         "part_number": vbios_info.part_number.decode("utf-8"),
-        "vbios_version_string": vbios_info.vbios_version_string.decode("utf-8"),
+        "vbios_version": vbios_info.vbios_version,
     }
 
 
@@ -824,14 +817,16 @@ def amdsmi_get_board_info(
 
     return {
         "serial_number": board_info.serial_number,
+        "model_number": board_info.model_number.decode("utf-8"),
         "product_serial": board_info.product_serial.decode("utf-8"),
         "product_name": board_info.product_name.decode("utf-8"),
+        "manufacturer_name" : board_info.product_name.decode("utf-8")
     }
 
 
 def amdsmi_get_ras_block_features_enabled(
     device_handle: amdsmi_wrapper.amdsmi_device_handle,
-) -> Dict[str, Any]:
+) -> List[Dict[str, str]]:
     if not isinstance(device_handle, amdsmi_wrapper.amdsmi_device_handle):
         raise AmdSmiParameterException(
             device_handle, amdsmi_wrapper.amdsmi_device_handle
@@ -839,24 +834,22 @@ def amdsmi_get_ras_block_features_enabled(
 
     ras_state = amdsmi_wrapper.amdsmi_ras_err_state_t()
     ras_states = []
-    for key, gpu_block in amdsmi_wrapper.amdsmi_gpu_block_t__enumvalues.items():
-        if gpu_block == "AMDSMI_GPU_BLOCK_RESERVED":
+    for gpu_block in AmdSmiGpuBlock:
+        if gpu_block.name == "RESERVED" or gpu_block.name == "INVALID":
             continue
-        if gpu_block == "AMDSMI_GPU_BLOCK_LAST":
-            gpu_block = "AMDSMI_GPU_BLOCK_FUSE"
+        if gpu_block.name == "LAST":
+            gpu_block.name = "FUSE"
         _check_res(
             amdsmi_wrapper.amdsmi_get_ras_block_features_enabled(
                 device_handle,
-                amdsmi_wrapper.amdsmi_gpu_block_t(key),
+                amdsmi_wrapper.amdsmi_gpu_block_t(gpu_block.value),
                 ctypes.byref(ras_state),
             )
         )
         ras_states.append(
             {
-                "block": gpu_block,
-                "status": amdsmi_wrapper.amdsmi_ras_err_state_t__enumvalues[
-                    ras_state.value
-                ],
+                "block": gpu_block.name,
+                "status": AmdSmiRasErrState(ras_state.value).name,
             }
         )
 
@@ -1029,7 +1022,7 @@ def amdsmi_get_vram_usage(
             device_handle, ctypes.byref(vram_info))
     )
 
-    return {"vram_used": vram_info.vram_used, "vram_total": vram_info.vram_total}
+    return {"vram_total": vram_info.vram_total, "vram_used": vram_info.vram_used}
 
 
 def amdsmi_get_pcie_link_status(
@@ -2263,20 +2256,6 @@ def amdsmi_dev_get_perf_level(
     return result
 
 
-def amdsmi_set_perf_determinism_mode(
-    device_handle: amdsmi_wrapper.amdsmi_device_handle, clkvalue: int
-) -> None:
-    if not isinstance(device_handle, amdsmi_wrapper.amdsmi_device_handle):
-        raise AmdSmiParameterException(
-            device_handle, amdsmi_wrapper.amdsmi_device_handle
-        )
-    if not isinstance(clkvalue, int):
-        raise AmdSmiParameterException(clkvalue, int)
-
-    _check_res(amdsmi_wrapper.amdsmi_set_perf_determinism_mode(
-        device_handle, clkvalue))
-
-
 def amdsmi_dev_get_overdrive_level(
     device_handle: amdsmi_wrapper.amdsmi_device_handle,
 ) -> int:
@@ -2448,30 +2427,6 @@ def amdsmi_dev_get_od_volt_curve_regions(
     return result
 
 
-def amdsmi_dev_get_power_profile_presets(
-    device_handle: amdsmi_wrapper.amdsmi_device_handle, sensor_idx: int
-) -> Dict[str, Any]:
-    if not isinstance(device_handle, amdsmi_wrapper.amdsmi_device_handle):
-        raise AmdSmiParameterException(
-            device_handle, amdsmi_wrapper.amdsmi_device_handle
-        )
-    if not isinstance(sensor_idx, int):
-        raise AmdSmiParameterException(sensor_idx, int)
-
-    status = amdsmi_wrapper.amdsmi_power_profile_status_t()
-    _check_res(
-        amdsmi_wrapper. amdsmi_dev_get_power_profile_presets(
-            device_handle, sensor_idx, ctypes.byref(status)
-        )
-    )
-
-    return {
-        "available_profiles": status.available_profiles,
-        "current": status.current,
-        "num_profiles": status.num_profiles,
-    }
-
-
 def amdsmi_dev_get_ecc_count(
     device_handle: amdsmi_wrapper.amdsmi_device_handle, block: AmdSmiGpuBlock
 ) -> Dict[str, int]:
@@ -2485,7 +2440,7 @@ def amdsmi_dev_get_ecc_count(
 
     ec = amdsmi_wrapper.amdsmi_error_count_t()
     _check_res(
-        amdsmi_wrapper. amdsmi_dev_get_ecc_count(
+        amdsmi_wrapper.amdsmi_dev_get_ecc_count(
             device_handle, block, ctypes.byref(ec))
     )
 
@@ -2537,11 +2492,12 @@ def amdsmi_status_string(status: amdsmi_wrapper.amdsmi_status_t) -> str:
     if not isinstance(status, amdsmi_wrapper.amdsmi_status_t):
         raise AmdSmiParameterException(status, amdsmi_wrapper.amdsmi_status_t)
 
-    status_string = ctypes.c_char_p()
-    _check_res(amdsmi_wrapper.amdsmi_status_string(
-        status, ctypes.byref(status_string)))
+    status_string_p_p = ctypes.pointer(ctypes.pointer(ctypes.c_char()))
 
-    return amdsmi_wrapper.string_cast(status_string)
+    _check_res(amdsmi_wrapper.amdsmi_status_string(
+        status, status_string_p_p))
+
+    return amdsmi_wrapper.string_cast(status_string_p_p.contents)
 
 
 def amdsmi_get_compute_process_info() -> List[Dict[str, int]]:

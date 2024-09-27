@@ -3,12 +3,17 @@ This is an unofficial distribution of the official Python wrapper for amdsmi.
 Dear AMD: Please contact Jae-Won Chung <jwnchung@umich.edu> to take over the repository when you would like to distribute official bindings under this project name.
 
 
-# Requirements
+# AMD SMI Python Library
+
+## Requirements
+
 * python 3.6 64-bit
 * driver must be loaded for amdsmi_init() to pass
 
-# Overview
-## Folder structure:
+## Overview
+
+### Folder structure
+
 File Name | Note
 ---|---
 `__init__.py` | Python package initialization file
@@ -17,9 +22,10 @@ File Name | Note
 `amdsmi_exception.py` | Amdsmi exceptions python file
 `README.md` | Documentation
 
-## Usage:
+### Usage
 
 `amdsmi` folder should be copied and placed next to importing script. It should be imported as:
+
 ```python
 from amdsmi import *
 
@@ -41,15 +47,17 @@ To initialize amdsmi lib, amdsmi_init() must be called before all other calls to
 
 To close connection to driver, amdsmi_shut_down() must be the last call.
 
-# Exceptions
+## Exceptions
 
 All exceptions are in `amdsmi_exception.py` file.
 Exceptions that can be thrown are:
+
 * `AmdSmiException`: base amdsmi exception class
 * `AmdSmiLibraryException`: derives base `AmdSmiException` class and represents errors that can occur in amdsmi-lib.
 When this exception is thrown, `err_code` and `err_info` are set. `err_code` is an integer that corresponds to errors that can occur
 in amdsmi-lib and `err_info` is a string that explains the error that occurred.
 Example:
+
 ```python
 try:
     num_of_GPUs = len(amdsmi_get_device_handles())
@@ -60,14 +68,16 @@ except AmdSmiException as e:
     if e.err_code == AmdSmiRetCode.ERR_RETRY:
         print("Error info: {}".format(e.err_info))
 ```
+
 * `AmdSmiRetryException` : Derives `AmdSmiLibraryException` class and signals device is busy and call should be retried.
 * `AmdSmiTimeoutException` : Derives `AmdSmiLibraryException` class and represents that call had timed out.
 * `AmdSmiParameterException`: Derives base `AmdSmiException` class and represents errors related to invaild parameters passed to functions. When this exception is thrown, err_msg is set and it explains what is the actual and expected type of the parameters.
 * `AmdSmiBdfFormatException`: Derives base `AmdSmiException` class and represents invalid bdf format.
 
-# API
+## API
 
-## amdsmi_init
+### amdsmi_init
+
 Description: Initialize amdsmi lib and connect to driver
 
 Input parameters: `None`
@@ -75,9 +85,11 @@ Input parameters: `None`
 Output: `None`
 
 Exceptions that can be thrown by `amdsmi_init` function:
+
 * `AmdSmiLibraryException`
 
 Example:
+
 ```python
 try:
     amdsmi_init()
@@ -87,7 +99,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_shut_down
+### amdsmi_shut_down
+
 Description: Finalize and close connection to driver
 
 Input parameters: `None`
@@ -95,9 +108,11 @@ Input parameters: `None`
 Output: `None`
 
 Exceptions that can be thrown by `amdsmi_shut_down` function:
+
 * `AmdSmiLibraryException`
 
 Example:
+
 ```python
 try:
     amdsmi_init()
@@ -107,7 +122,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_device_type
+### amdsmi_get_device_type
+
 Description: Checks the type of device with provided handle.
 
 Input parameters: device handle as an instance of `amdsmi_device_handle`
@@ -115,9 +131,11 @@ Input parameters: device handle as an instance of `amdsmi_device_handle`
 Output: Integer, type of gpu
 
 Exceptions that can be thrown by `amdsmi_get_device_type` function:
+
 * `AmdSmiLibraryException`
 
 Example:
+
 ```python
 try:
     type_of_GPU = amdsmi_get_device_type(device_handle)
@@ -127,7 +145,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_device_handles
+### amdsmi_get_device_handles
+
 Description: Returns list of GPU device handle objects on current machine
 
 Input parameters: `None`
@@ -135,9 +154,11 @@ Input parameters: `None`
 Output: List of GPU device handle objects
 
 Exceptions that can be thrown by `amdsmi_get_device_handles` function:
+
 * `AmdSmiLibraryException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -150,7 +171,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_socket_handles
+### amdsmi_get_socket_handles
+
 **Note: CURRENTLY HARDCODED TO RETURN DUMMY DATA**
 Description: Returns list of socket device handle objects on current machine
 
@@ -159,9 +181,11 @@ Input parameters: `None`
 Output: List of socket device handle objects
 
 Exceptions that can be thrown by `amdsmi_get_socket_handles` function:
+
 * `AmdSmiLibraryException`
 
 Example:
+
 ```python
 try:
     sockets = amdsmi_get_socket_handles()
@@ -170,7 +194,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_socket_info
+### amdsmi_get_socket_info
+
 **Note: CURRENTLY HARDCODED TO RETURN EMPTY VALUES**
 Description: Return socket name
 
@@ -180,9 +205,11 @@ Input parameters:
 Output: Socket name
 
 Exceptions that can be thrown by `amdsmi_get_socket_info` function:
+
 * `AmdSmiLibraryException`
 
 Example:
+
 ```python
 try:
     socket_handles = amdsmi_get_socket_handles()
@@ -195,12 +222,13 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_get_device_handle_from_bdf
 
-## amdsmi_get_device_handle_from_bdf
 Description: Returns device handle from the given BDF
 
 Input parameters: bdf string in form of either `<domain>:<bus>:<device>.<function>` or `<bus>:<device>.<function>` in hexcode format.
 Where:
+
 * `<domain>` is 4 hex digits long from 0000-FFFF interval
 * `<bus>` is 2 hex digits long from 00-FF interval
 * `<device>` is 2 hex digits long from 00-1F interval
@@ -209,10 +237,12 @@ Where:
 Output: device handle object
 
 Exceptions that can be thrown by `amdsmi_get_device_handle_from_bdf` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiBdfFormatException`
 
 Example:
+
 ```python
 try:
     device = amdsmi_get_device_handle_from_bdf("0000:23:00.0")
@@ -221,24 +251,29 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_device_bdf
+### amdsmi_get_device_bdf
+
 Description: Returns BDF of the given device
 
 Input parameters:
+
 * `device_handle` dev for which to query
 
 Output: BDF string in form of `<domain>:<bus>:<device>.<function>` in hexcode format.
 Where:
+
 * `<domain>` is 4 hex digits long from 0000-FFFF interval
 * `<bus>` is 2 hex digits long from 00-FF interval
 * `<device>` is 2 hex digits long from 00-1F interval
 * `<function>` is 1 hex digit long from 0-7 interval
 
 Exceptions that can be thrown by `amdsmi_get_device_bdf` function:
+
 * `AmdSmiParameterException`
 * `AmdSmiLibraryException`
 
 Example:
+
 ```python
 try:
     device = amdsmi_get_device_handles()[0]
@@ -247,19 +282,23 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_device_uuid
+### amdsmi_get_device_uuid
+
 Description: Returns the UUID of the device
 
 Input parameters:
+
 * `device_handle` dev for which to query
 
 Output: UUID string unique to the device
 
 Exceptions that can be thrown by `amdsmi_get_device_uuid` function:
+
 * `AmdSmiParameterException`
 * `AmdSmiLibraryException`
 
 Example:
+
 ```python
 try:
     device = amdsmi_get_device_handles()[0]
@@ -268,19 +307,23 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_driver_version
+### amdsmi_get_driver_version
+
 Description: Returns the version string of the driver
 
 Input parameters:
+
 * `device_handle` dev for which to query
 
 Output: Driver version string that is handling the device
 
 Exceptions that can be thrown by `amdsmi_get_driver_version` function:
+
 * `AmdSmiParameterException`
 * `AmdSmiLibraryException`
 
 Example:
+
 ```python
 try:
     device = amdsmi_get_device_handles()[0]
@@ -289,10 +332,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_asic_info
+### amdsmi_get_asic_info
+
 Description: Returns asic information for the given GPU
 
 Input parameters:
+
 * `device_handle` device which to query
 
 Output: Dictionary with fields
@@ -307,11 +352,13 @@ Field | Content
 `asic_serial` | asic serial
 
 Exceptions that can be thrown by `amdsmi_get_asic_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -329,26 +376,34 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_get_power_cap_info
+
+### amdsmi_get_power_cap_info
+
 Description: Returns dictionary of power capabilities as currently configured
 on the given GPU
 
 Input parameters:
+
 * `device_handle` device which to query
 
 Output: Dictionary with fields
 
 Field | Description
 ---|---
-`dpm_cap` |  dynamic power management capability
 `power_cap` |  power capability
+`dpm_cap` |  dynamic power management capability
+`power_cap_default` |  default power capability
+`min_power_cap` | min power capability
+`max_power_cap` | max power capability
 
 Exceptions that can be thrown by `amdsmi_get_power_cap_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -357,16 +412,21 @@ try:
     else:
         for device in devices:
             power_info = amdsmi_get_power_cap_info(device)
-            print(power_info['dpm_cap'])
             print(power_info['power_cap'])
+            print(power_info['dpm_cap'])
+            print(power_info['power_cap_default'])
+            print(power_info['min_power_cap'])
+            print(power_info['max_power_cap'])
 except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_caps_info
+### amdsmi_get_caps_info
+
 Description: Returns capabilities as currently configured for the given GPU
 
 Input parameters:
+
 * `device_handle` device which to query
 
 Output: Dictionary with fields
@@ -380,11 +440,13 @@ Field | Description
  `dma_ip_count` | Number of DMA engines on the device
 
 Exceptions that can be thrown by `amdsmi_get_caps_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -404,10 +466,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_vbios_info
+### amdsmi_get_vbios_info
+
 Description:  Returns the static information for the VBIOS on the device.
 
 Input parameters:
+
 * `device_handle` device which to query
 
 Output: Dictionary with fields
@@ -421,11 +485,13 @@ Field | Description
 `vbios_version_string` | vbios version string
 
 Exceptions that can be thrown by `amdsmi_get_vbios_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -443,10 +509,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_fw_info
+### amdsmi_get_fw_info
+
 Description:  Returns GPU firmware related information.
 
 Input parameters:
+
 * `device_handle` device which to query
 
 Output: Dictionary with fields
@@ -456,11 +524,13 @@ Field | Description
 `fw_list`| List of dictionaries that contain information about a certain firmware block
 
 Exceptions that can be thrown by `amdsmi_get_fw_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -476,10 +546,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_gpu_activity
+### amdsmi_get_gpu_activity
+
 Description: Returns the engine usage for the given GPU
 
 Input parameters:
+
 * `device_handle` device which to query
 
 Output: Dictionary with fields
@@ -491,11 +563,13 @@ Field | Description
 `mm_activity` | list of multimedia engine usages in percentage (0 - 100)
 
 Exceptions that can be thrown by `amdsmi_get_gpu_activity` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -510,10 +584,13 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_get_power_measure
+
+### amdsmi_get_power_measure
+
 Description: Returns the current power and voltage for the given GPU
 
 Input parameters:
+
 * `device_handle` device which to query
 
 Output: Dictionary with fields
@@ -526,11 +603,13 @@ Field | Description
 `power_limit` | power limit
 
 Exceptions that can be thrown by `amdsmi_get_power_measure` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -546,25 +625,30 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_get_vram_usage
+
+### amdsmi_get_vram_usage
+
 Description: Returns total VRAM and VRAM in use
 
 Input parameters:
+
 * `device_handle` device which to query
 
 Output: Dictionary with fields
 
 Field | Description
 ---|---
-`vram_used`| VRAM currently in use
 `vram_total` | VRAM total
+`vram_used`| VRAM currently in use
 
 Exceptions that can be thrown by `amdsmi_get_vram_usage` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -578,10 +662,13 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_get_clock_measure
+
+### amdsmi_get_clock_measure
+
 Description: Returns the clock measure for the given GPU
 
 Input parameters:
+
 * `device_handle` device which to query
 * `clock_type` one of `AmdSmiClkType` enum values:
 
@@ -609,11 +696,13 @@ Field | Description
 `max_clk` | Maximum clock for given clock type
 
 Exceptions that can be thrown by `amdsmi_get_clock_measure` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -630,7 +719,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_pcie_link_status
+### amdsmi_get_pcie_link_status
+
 Description: Returns the pcie link status for the given GPU
 
 Input parameters:
@@ -645,11 +735,13 @@ Field | Description
 `pcie_speed`| current pcie speed
 
 Exceptions that can be thrown by `amdsmi_get_pcie_link_status` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -664,10 +756,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_pcie_link_caps
+### amdsmi_get_pcie_link_caps
+
 Description:  Returns the max pcie link capabilities for the given GPU
 
 Input parameters:
+
 * `device_handle` device which to query
 
 Output: Dictionary with fields
@@ -678,11 +772,13 @@ Field | Description
 `pcie_speed` | PCIe speed in MT/s
 
 Exceptions that can be thrown by `amdsmi_get_pcie_link_caps` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -697,10 +793,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_bad_page_info
+### amdsmi_get_bad_page_info
+
 Description:  Returns bad page info for the given GPU
 
 Input parameters:
+
 * `device_handle` device which to query
 
 Output: List consisting of dictionaries with fields for each bad page found
@@ -713,11 +811,13 @@ Field | Description
 `status` | Status of bad page
 
 Exceptions that can be thrown by `amdsmi_get_bad_page_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -738,7 +838,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_target_frequency_range
+### amdsmi_get_target_frequency_range
+
 Description: Returns the supported frequency target range for the given GPU
 
 `Note: Not Supported`
@@ -772,11 +873,13 @@ Field | Description
 `current_lower_bound` | Minimal value of target current frequency in MHz
 
 Exceptions that can be thrown by `amdsmi_get_target_frequency_range` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -809,7 +912,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_process_list
+### amdsmi_get_process_list
+
 Description: Returns the list of processes for the given GPU
 
 Input parameters:
@@ -819,11 +923,13 @@ Input parameters:
 Output: List of process handles found
 
 Exceptions that can be thrown by `amdsmi_get_process_list` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -836,7 +942,9 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_get_process_info
+
+### amdsmi_get_process_info
+
 Description: Returns the info for the given process
 
 Input parameters:
@@ -855,11 +963,13 @@ Field | Description
 `memory_usage`| <table><thead><tr> <th> Subfield </th> <th> Description</th> </tr></thead><tbody><tr><td>`gtt_mem`</td><td>GTT memory usage</td></tr><tr><td>`cpu_mem`</td><td>CPU memory usage</td></tr><tr><td>`vram_mem`</td><td>VRAM memory usage</td></tr> </tbody></table>
 
 Exceptions that can be thrown by `amdsmi_get_process_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -874,7 +984,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_ecc_error_count
+### amdsmi_get_ecc_error_count
+
 Description: Returns the ECC error count for the given GPU
 
 Input parameters:
@@ -889,11 +1000,13 @@ Field | Description
 `uncorrectable_count`| Uncorrectable ECC error count
 
 Exceptions that can be thrown by `amdsmi_get_ecc_error_count` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -908,7 +1021,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_board_info
+### amdsmi_get_board_info
+
 Description: Returns board info for the given GPU
 
 Input parameters:
@@ -924,11 +1038,13 @@ Field | Description
 `product_name` | Product name
 
 Exceptions that can be thrown by `amdsmi_get_board_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     device = amdsmi_get_device_handle_from_bdf("0000:23.00.0")
@@ -940,7 +1056,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_ras_block_features_enabled
+### amdsmi_get_ras_block_features_enabled
+
 Description: Returns status of each RAS block for the given GPU
 
 Input parameters:
@@ -955,11 +1072,13 @@ Field | Description
 `status` | RAS block status
 
 Exceptions that can be thrown by `amdsmi_get_ras_block_features_enabled` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -972,14 +1091,15 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## AmdSmiEventReader class
+
+### AmdSmiEventReader class
 
 Description: Providing methods for event monitoring. This is context manager class.
 Can be used with `with` statement for automatic cleanup.
 
 Methods:
 
-## Constructor
+### Constructor
 
 Description: Allocates a new event reader notifier to monitor different types of events for the given GPU
 
@@ -995,7 +1115,7 @@ Event Type | Description
 `GPU_PRE_RESET`   | gpu pre reset
 `GPU_POST_RESET` | gpu post reset
 
-## read
+### read
 
 Description: Reads events on the given device. When event is caught, device handle, message and event type are returned. Reading events stops when timestamp passes without event reading.
 
@@ -1004,7 +1124,7 @@ Input parameters:
 * `timestamp` number of milliseconds to wait for an event to occur. If event does not happen monitoring is finished
 * `num_elem` number of events. This is optional parameter. Default value is 10.
 
-## stop
+### stop
 
 Description: Any resources used by event notification for the the given device will be freed with this function. This can be used explicitly or
 automatically using `with` statement, like in the examples below. This should be called either manually or automatically for every created AmdSmiEventReader object.
@@ -1012,6 +1132,7 @@ automatically using `with` statement, like in the examples below. This should be
 Input parameters: `None`
 
 Example with manual cleanup of AmdSmiEventReader:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1027,6 +1148,7 @@ finally:
 ```
 
 Example with automatic cleanup using `with` statement:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1040,7 +1162,8 @@ except AmdSmiException as e:
 
 ```
 
-## amdsmi_dev_open_supported_func_iterator
+### amdsmi_dev_open_supported_func_iterator
+
 Description: Get a function name iterator of supported AMDSMI functions for a device
 
 Input parameters:
@@ -1050,11 +1173,13 @@ Input parameters:
 Output: Handle for a function iterator
 
 Exceptions that can be thrown by `amdsmi_dev_open_supported_func_iterator` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1069,7 +1194,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_open_supported_variant_iterator
+### amdsmi_dev_open_supported_variant_iterator
+
 Description: Get a variant iterator for a given handle
 
 Input parameters:
@@ -1079,11 +1205,13 @@ Input parameters:
 Output: Variant iterator handle
 
 Exceptions that can be thrown by `amdsmi_dev_open_supported_variant_iterator` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1100,7 +1228,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_next_func_iter
+### amdsmi_next_func_iter
+
 Description: Advance an object identifier iterator
 
 Input parameters:
@@ -1110,11 +1239,13 @@ Input parameters:
 Output: Next iterator handle
 
 Exceptions that can be thrown by `amdsmi_next_func_iter` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1131,7 +1262,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_close_supported_func_iterator
+### amdsmi_dev_close_supported_func_iterator
+
 Description: Close a variant iterator handle
 
 Input parameters:
@@ -1141,11 +1273,13 @@ Input parameters:
 Output: None
 
 Exceptions that can be thrown by `amdsmi_dev_close_supported_func_iterator` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1159,7 +1293,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_func_iter_value
+### amdsmi_get_func_iter_value
+
 Description: Get the value associated with a function/variant iterator
 
 Input parameters:
@@ -1175,11 +1310,13 @@ Field | Description
 `amd_id_0` | <table>  <thead><tr> <th> Subfield </th> <th> Description</th> </tr></thead><tbody><tr><td>`memory_type`</td><td>Memory type</td></tr><tr><td>`temp_metric`</td><td>Temperature metric</td></tr><tr><td>`evnt_type`</td><td>Event type</td></tr><tr><td>`evnt_group`</td><td>Event group</td></tr><tr><td>`clk_type`</td><td>Clock type</td></tr></tr><tr><td>`fw_block`</td><td>Firmware block</td></tr><tr><td>`gpu_block_type`</td><td>GPU block type</td></tr></tbody></table>
 
 Exceptions that can be thrown by `amdsmi_get_func_iter_value` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1195,22 +1332,26 @@ except AmdSmiException as e:
     print(e)
 ```
 
-##  amdsmi_dev_set_pci_bandwidth
+### amdsmi_dev_set_pci_bandwidth
+
 Description: Control the set of allowed PCIe bandwidths that can be used
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `bw_bitmask` A bitmask indicating the indices of the bandwidths that are
 to be enabled (1) and disabled (0)
 
 Output: None
 
-Exceptions that can be thrown by ` amdsmi_dev_set_pci_bandwidth` function:
+Exceptions that can be thrown by `amdsmi_dev_set_pci_bandwidth` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1222,10 +1363,13 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_set_power_cap
+
+### amdsmi_dev_set_power_cap
+
 Description: Set the power cap value
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `sensor_ind` a 0-based sensor index. Normally, this will be 0. If a
 device has more than one sensor, it could be greater than 0
@@ -1233,12 +1377,14 @@ device has more than one sensor, it could be greater than 0
 
 Output: None
 
-Exceptions that can be thrown by ` amdsmi_dev_set_power_cap` function:
+Exceptions that can be thrown by `amdsmi_dev_set_power_cap` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1251,10 +1397,13 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_set_power_profile
+
+### amdsmi_dev_set_power_profile
+
 Description: Set the power profile
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `reserved` Not currently used, set to 0
 * `profile` a amdsmi_power_profile_preset_masks_t that hold the mask of
@@ -1262,12 +1411,14 @@ the desired new power profile
 
 Output: None
 
-Exceptions that can be thrown by ` amdsmi_dev_set_power_profile` function:
+Exceptions that can be thrown by `amdsmi_dev_set_power_profile` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1281,11 +1432,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_dev_set_clk_range
 
-## amdsmi_dev_set_clk_range
 Description: This function sets the clock range information
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `min_clk_value` minimum clock value for desired clock range
 * `max_clk_value` maximum clock value for desired clock range
@@ -1294,11 +1446,13 @@ Input parameters:
 Output: None
 
 Exceptions that can be thrown by `amdsmi_dev_set_clk_range` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1311,8 +1465,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_dev_get_pci_id
 
-## amdsmi_dev_get_pci_id
 Description: Get the unique PCI device identifier associated for a device
 
 Input parameters:
@@ -1333,13 +1487,14 @@ BDFID = ((DOMAIN & 0xffffffff) << 32) | ((BUS & 0xff) << 8) |
 | Device   | [ 7: 3] |
 | Function | [ 2: 0] |
 
-
 Exceptions that can be thrown by `amdsmi_dev_get_pci_id` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = gpuvsmi_get_devices()
@@ -1353,8 +1508,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_dev_get_pci_bandwidth
 
-## amdsmi_dev_get_pci_bandwidth
 Description: Get the list of possible PCIe bandwidths that are available.
 
 Input parameters:
@@ -1368,7 +1523,6 @@ Field | Content
 `transfer_rate` |  transfer_rate dictionary
 `lanes` | lanes
 
-
 transfer_rate dictionary
 
 Field | Content
@@ -1378,11 +1532,13 @@ Field | Content
 `frequency` | list of frequency
 
 Exceptions that can be thrown by `amdsmi_dev_get_pci_bandwidth` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = gpuvsmi_get_devices()
@@ -1396,7 +1552,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_get_pci_throughput
+### amdsmi_dev_get_pci_throughput
+
 Description: Get PCIe traffic information
 
 Input parameters:
@@ -1412,11 +1569,13 @@ Field | Content
 `max_pkt_sz` | maximum packet size
 
 Exceptions that can be thrown by `amdsmi_dev_get_pci_throughput` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = gpuvsmi_get_devices()
@@ -1430,7 +1589,7 @@ except AmdSmiException as e:
     print(e)
 ```
 
-##  amdsmi_dev_get_pci_replay_counter
+### amdsmi_dev_get_pci_replay_counter
 
 Description: Get PCIe replay counter
 
@@ -1441,12 +1600,14 @@ Input parameters:
 Output: counter value
 The sum of the NAK's received and generated by the GPU
 
-Exceptions that can be thrown by ` amdsmi_dev_get_pci_replay_counter` function:
+Exceptions that can be thrown by `amdsmi_dev_get_pci_replay_counter` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = gpuvsmi_get_devices()
@@ -1460,7 +1621,7 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_topo_get_numa_affinity
+### amdsmi_topo_get_numa_affinity
 
 Description: Get the NUMA node associated with a device
 
@@ -1471,11 +1632,13 @@ Input parameters:
 Output: NUMA node value
 
 Exceptions that can be thrown by `amdsmi_topo_get_numa_affinity` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = gpuvsmi_get_devices()
@@ -1489,9 +1652,9 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_get_power_ave
+### amdsmi_dev_get_power_ave
 
-Description: Get the average power consumption of the device 
+Description: Get the average power consumption of the device
 
 Input parameters:
 
@@ -1502,11 +1665,13 @@ If a device has more than one sensor, it could be greater than 0.
 Output: the average power consumption
 
 Exceptions that can be thrown by `amdsmi_dev_get_power_ave` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = gpuvsmi_get_devices()
@@ -1520,8 +1685,7 @@ except AmdSmiException as e:
     print(e)
 ```
 
-
-## amdsmi_dev_get_energy_count
+### amdsmi_dev_get_energy_count
 
 Description: Get the energy accumulator counter of the device.
 
@@ -1538,11 +1702,13 @@ Field | Content
 `timestamp` |  timestamp
 
 Exceptions that can be thrown by `amdsmi_dev_get_energy_count` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = gpuvsmi_get_devices()
@@ -1556,8 +1722,7 @@ except AmdSmiException as e:
     print(e)
 ```
 
-
-## amdsmi_dev_get_memory_total
+### amdsmi_dev_get_memory_total
 
 Description: Get the total amount of memory that exists
 
@@ -1569,11 +1734,13 @@ Input parameters:
 Output: total amount of memory
 
 Exceptions that can be thrown by `amdsmi_dev_get_memory_total` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = gpuvsmi_get_devices()
@@ -1587,13 +1754,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_dev_set_od_clk_info
 
-
-
-##  amdsmi_dev_set_od_clk_info
 Description: This function sets the clock frequency information
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `level` AMDSMI_FREQ_IND_MIN|AMDSMI_FREQ_IND_MAX to set the minimum (0)
 or maximum (1) speed
@@ -1602,12 +1768,14 @@ or maximum (1) speed
 
 Output: None
 
-Exceptions that can be thrown by ` amdsmi_dev_set_od_clk_info` function:
+Exceptions that can be thrown by `amdsmi_dev_set_od_clk_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1625,8 +1793,7 @@ except AmdSmiException as e:
     print(e)
 ```
 
-
-## amdsmi_dev_get_memory_usage
+### amdsmi_dev_get_memory_usage
 
 Description: Get the current memory usage
 
@@ -1635,14 +1802,16 @@ Input parameters:
 * `device_handle` device which to query
 * `mem_type` enum AmdSmiMemoryType
 
-Output: the amount of memory currently being used 
+Output: the amount of memory currently being used
 
 Exceptions that can be thrown by `amdsmi_dev_get_memory_usage` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = gpuvsmi_get_devices()
@@ -1656,11 +1825,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_dev_set_od_volt_info
 
-##  amdsmi_dev_set_od_volt_info
 Description: This function sets  1 of the 3 voltage curve points
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `vpoint` voltage point [0|1|2] on the voltage curve
 * `clk_value` clock value component of voltage curve point
@@ -1668,12 +1838,14 @@ Input parameters:
 
 Output: None
 
-Exceptions that can be thrown by ` amdsmi_dev_set_od_volt_info` function:
+Exceptions that can be thrown by `amdsmi_dev_set_od_volt_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1686,8 +1858,7 @@ except AmdSmiException as e:
     print(e)
 ```
 
-
-## amdsmi_dev_get_memory_busy_percent
+### amdsmi_dev_get_memory_busy_percent
 
 Description: Get percentage of time any device memory is being used
 
@@ -1698,11 +1869,13 @@ Input parameters:
 Output: percentage of time that any device memory is being used for the specified device.
 
 Exceptions that can be thrown by `amdsmi_dev_get_memory_busy_percent` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = gpuvsmi_get_devices()
@@ -1716,24 +1889,26 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_dev_set_perf_level_v1
 
-
-##  amdsmi_dev_set_perf_level_v1
 Description: Set the PowerPlay performance level associated with the device
 with provided device handle with the provided value
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `perf_lvl` the value to which the performance level should be set
 
 Output: None
 
-Exceptions that can be thrown by ` amdsmi_dev_set_perf_level_v1` function:
+Exceptions that can be thrown by `amdsmi_dev_set_perf_level_v1` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1745,11 +1920,14 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_dev_get_fan_rpms
+
+### amdsmi_dev_get_fan_rpms
+
 Description: Get the fan speed in RPMs of the device with the specified device
 handle and 0-based sensor index.
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `sensor_idx` a 0-based sensor index. Normally, this will be 0. If a device has
 more than one sensor, it could be greater than 0.
@@ -1757,11 +1935,13 @@ more than one sensor, it could be greater than 0.
 Output: Fan speed in rpms as integer
 
 Exceptions that can be thrown by `amdsmi_dev_get_fan_rpms` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1774,11 +1954,14 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_dev_get_fan_speed
+
+### amdsmi_dev_get_fan_speed
+
 Description: Get the fan speed for the specified device as a value relative to
 AMDSMI_MAX_FAN_SPEED
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `sensor_idx` a 0-based sensor index. Normally, this will be 0. If a device has
 more than one sensor, it could be greater than 0.
@@ -1786,11 +1969,13 @@ more than one sensor, it could be greater than 0.
 Output: Fan speed in relative to MAX
 
 Exceptions that can be thrown by `amdsmi_dev_get_fan_speed` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1803,10 +1988,13 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_dev_get_fan_speed_max
+
+### amdsmi_dev_get_fan_speed_max
+
 Description: Get the max fan speed of the device with provided device handle
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `sensor_idx` a 0-based sensor index. Normally, this will be 0. If a device has
 more than one sensor, it could be greater than 0.
@@ -1814,11 +2002,13 @@ more than one sensor, it could be greater than 0.
 Output: Max fan speed as integer
 
 Exceptions that can be thrown by `amdsmi_dev_get_fan_speed_max` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1831,23 +2021,28 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_get_temp_metric
+
+### amdsmi_dev_get_temp_metric
+
 Description: Get the temperature metric value for the specified metric, from the
 specified temperature sensor on the specified device
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `sensor_type` part of device from which temperature should be obtained
 * `metric` enum indicated which temperature value should be retrieved
 
 Output: Temperature as integer in millidegrees Celcius
 
-Exceptions that can be thrown by ` amdsmi_dev_get_temp_metric` function:
+Exceptions that can be thrown by `amdsmi_dev_get_temp_metric` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1861,23 +2056,28 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_get_volt_metric
+
+### amdsmi_dev_get_volt_metric
+
 Description: Get the voltage metric value for the specified metric, from the
 specified voltage sensor on the specified device
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `sensor_type` part of device from which voltage should be obtained
 * `metric` enum indicated which voltage value should be retrieved
 
 Output: Voltage as integer in millivolts
 
-Exceptions that can be thrown by ` amdsmi_dev_get_volt_metric` function:
+Exceptions that can be thrown by `amdsmi_dev_get_volt_metric` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1891,20 +2091,25 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_dev_get_busy_percent
+
+### amdsmi_dev_get_busy_percent
+
 Description: Get percentage of time device is busy doing any processing
 
 Input parameters:
+
 * `device_handle` handle for the given device
 
 Output: How busy the device is (as percentage of time)
 
 Exceptions that can be thrown by `amdsmi_dev_get_busy_percent` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1917,10 +2122,13 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_get_utilization_count
+
+### amdsmi_get_utilization_count
+
 Description: Get coarse grain utilization counter of the specified device
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `counter_types` variable number of counter types desired
 
@@ -1932,11 +2140,13 @@ Field | Description
 `Dictionary for each counter` | <table> <thead><tr><th> Subfield </th><th>Description</th></tr></thead><tbody><tr><td>`type`</td><td>Type of utilization counter</td></tr><tr><td>`value`</td><td>Value gotten for utilization counter</td></tr></tbody></table>
 
 Exceptions that can be thrown by `amdsmi_get_utilization_count` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1958,20 +2168,25 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_dev_get_perf_level
+
+### amdsmi_dev_get_perf_level
+
 Description: Get the performance level of the device with provided device handle
 
 Input parameters:
+
 * `device_handle` handle for the given device
 
 Output: Performance level as enum value of dev_perf_level_t
 
 Exceptions that can be thrown by `amdsmi_dev_get_perf_level` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -1984,21 +2199,26 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_set_perf_determinism_mode
+
+### amdsmi_set_perf_determinism_mode
+
 Description: Enter performance determinism mode with provided device handle
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `clkvalue` softmax value for GFXCLK in MHz
 
 Output: None
 
 Exceptions that can be thrown by `amdsmi_set_perf_determinism_mode` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2010,21 +2230,26 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_dev_get_overdrive_level
+
+### amdsmi_dev_get_overdrive_level
+
 Description: Get the overdrive percent associated with the device with provided
 device handle
 
 Input parameters:
+
 * `device_handle` handle for the given device
 
 Output: Overdrive percentage as integer
 
 Exceptions that can be thrown by `amdsmi_dev_get_overdrive_level` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2037,11 +2262,14 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_get_gpu_clk_freq
+
+### amdsmi_dev_get_gpu_clk_freq
+
 Description: Get the list of possible system clock speeds of device for a
 specified clock type
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `clk_type` the type of clock for which the frequency is desired
 
@@ -2053,12 +2281,14 @@ Field | Description
 `current`| The current frequency index
 `frequency`| List of frequencies, only the first num_supported frequencies are valid
 
-Exceptions that can be thrown by ` amdsmi_dev_get_gpu_clk_freq` function:
+Exceptions that can be thrown by `amdsmi_dev_get_gpu_clk_freq` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2070,10 +2300,13 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_get_od_volt_info
+
+### amdsmi_dev_get_od_volt_info
+
 Description: This function retrieves the voltage/frequency curve information
 
 Input parameters:
+
 * `device_handle` handle for the given device
 
 Output: Dictionary with fields
@@ -2087,13 +2320,14 @@ Field | Description
 `curve.vc_points`| The number of supported frequencies
 `num_regions`| The current frequency index
 
+Exceptions that can be thrown by `amdsmi_dev_get_od_volt_info` function:
 
-Exceptions that can be thrown by ` amdsmi_dev_get_od_volt_info` function:
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2105,10 +2339,13 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_get_gpu_metrics_info
+
+### amdsmi_dev_get_gpu_metrics_info
+
 Description: This function retrieves the gpu metrics information
 
 Input parameters:
+
 * `device_handle` handle for the given device
 
 Output: Dictionary with fields
@@ -2150,12 +2387,14 @@ Field | Description
 `mem_actvity_acc` | mem activity acc
 `temperature_hbm` | hbm temperature
 
-Exceptions that can be thrown by ` amdsmi_dev_get_gpu_metrics_info` function:
+Exceptions that can be thrown by `amdsmi_dev_get_gpu_metrics_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2167,11 +2406,14 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_get_od_volt_curve_regions
+
+### amdsmi_dev_get_od_volt_curve_regions
+
 Description: This function will retrieve the current valid regions in the
 frequency/voltage space
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `num_regions` number of freq volt regions
 
@@ -2182,12 +2424,14 @@ Field | Description
 `freq_range` | <table> <thead><tr><th> Subfield </th><th>Description</th></tr></thead><tbody><tr><td>`lower_bound`</td><td>lower bound freq range</td></tr><tr><td>`upper_bound`</td><td>upper bound freq range</td></tr></tbody></table>
 `volt_range` |  <table> <thead><tr><th> Subfield </th><th>Description</th></tr></thead><tbody><tr><td>`lower_bound`</td><td>lower bound volt range</td></tr><tr><td>`upper_bound`</td><td>upper bound volt range</td></tr></tbody></table>
 
-Exceptions that can be thrown by ` amdsmi_dev_get_od_volt_curve_regions` function:
+Exceptions that can be thrown by `amdsmi_dev_get_od_volt_curve_regions` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2199,11 +2443,14 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_get_power_profile_presets
+
+### amdsmi_dev_get_power_profile_presets
+
 Description:  Get the list of available preset power profiles and an indication of
 which profile is currently active
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `sensor_idx` number of freq volt regions
 
@@ -2215,12 +2462,14 @@ Field | Description
 `current`| Which power profile is currently active
 `num_profiles`| How many power profiles are available
 
-Exceptions that can be thrown by ` amdsmi_dev_get_power_profile_presets` function:
+Exceptions that can be thrown by `amdsmi_dev_get_power_profile_presets` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2233,7 +2482,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_counter_group_supported
+### amdsmi_dev_counter_group_supported
+
 Description: Tell if an event group is supported by a given device
 
 Input parameters:
@@ -2244,11 +2494,13 @@ Input parameters:
 Output: None
 
 Exceptions that can be thrown by `amdsmi_dev_counter_group_supported` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2261,7 +2513,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_create_counter
+### amdsmi_dev_create_counter
+
 Description: Creates a performance counter object
 
 Input parameters:
@@ -2272,11 +2525,13 @@ Input parameters:
 Output: An event handle of the newly created performance counter object
 
 Exceptions that can be thrown by `amdsmi_dev_create_counter` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2288,7 +2543,9 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_dev_destroy_counter
+
+### amdsmi_dev_destroy_counter
+
 Description: Destroys a performance counter object
 
 Input parameters:
@@ -2298,11 +2555,13 @@ Input parameters:
 Output: None
 
 Exceptions that can be thrown by `amdsmi_dev_destroy_counter` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2315,7 +2574,9 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_control_counter
+
+### amdsmi_control_counter
+
 Description: Issue performance counter control commands
 
 Input parameters:
@@ -2326,11 +2587,13 @@ Input parameters:
 Output: None
 
 Exceptions that can be thrown by `amdsmi_control_counter` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2343,7 +2606,9 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_read_counter
+
+### amdsmi_read_counter
+
 Description: Read the current value of a performance counter
 
 Input parameters:
@@ -2359,11 +2624,13 @@ Field | Description
 `time_running`| Time that the counter was running in nanoseconds
 
 Exceptions that can be thrown by `amdsmi_read_counter` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2376,7 +2643,9 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_counter_get_available_counters
+
+### amdsmi_counter_get_available_counters
+
 Description: Get the number of currently available counters
 
 Input parameters:
@@ -2386,12 +2655,14 @@ Input parameters:
 
 Output: Number of available counters for the given device of the inputted event group
 
-Exceptions that can be thrown by ` amdsmi_counter_get_available_counters` function:
+Exceptions that can be thrown by `amdsmi_counter_get_available_counters` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2404,21 +2675,26 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_set_perf_level
+
+### amdsmi_dev_set_perf_level
+
 Description: Set a desired performance level for given device
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `perf_level` performance level being set as AmdSmiDevPerfLevel
 
 Output: None
 
-Exceptions that can be thrown by ` amdsmi_dev_set_perf_level` function:
+Exceptions that can be thrown by `amdsmi_dev_set_perf_level` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2430,54 +2706,25 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_get_power_profile_presets
-Description: Get the list of available preset power profiles and an indication of
-which profile is currently active.
 
-Input parameters:
-* `device_handle` handle for the given device
-* `sensor_idx` sensor index as integer
+### amdsmi_dev_reset_gpu
 
-Output: Dictionary with fields
-
-Field | Description
----|---
-`available_profiles`| Which profiles are supported by this system
-`current`| Which power profile is currently active
-`num_profiles`| How many power profiles are available
-
-Exceptions that can be thrown by ` amdsmi_dev_get_power_profile_presets` function:
-* `AmdSmiLibraryException`
-* `AmdSmiRetryException`
-* `AmdSmiParameterException`
-
-Example:
-```python
-try:
-    devices = amdsmi_get_device_handles()
-    if len(devices) == 0:
-        print("No GPUs on machine")
-    else:
-        for device in devices:
-            status =  amdsmi_dev_get_power_profile_presets(device, 0)
-            print(status)
-except AmdSmiException as e:
-    print(e)
-```
-## amdsmi_dev_reset_gpu
 Description: Reset the gpu associated with the device with provided device handle
 
 Input parameters:
+
 * `device_handle` handle for the given device
 
 Output: None
 
 Exceptions that can be thrown by `amdsmi_dev_reset_gpu` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2489,11 +2736,14 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_dev_set_fan_speed
+
+### amdsmi_dev_set_fan_speed
+
 Description: Set the fan speed for the specified device with the provided speed,
 in RPMs
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `sensor_idx` sensor index as integer
 * `fan_speed` the speed to which the function will attempt to set the fan
@@ -2501,11 +2751,13 @@ Input parameters:
 Output: None
 
 Exceptions that can be thrown by `amdsmi_dev_set_fan_speed` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2517,21 +2769,26 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_dev_reset_fan
+
+### amdsmi_dev_reset_fan
+
 Description: Reset the fan to automatic driver control
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `sensor_idx` sensor index as integer
 
 Output: None
 
 Exceptions that can be thrown by `amdsmi_dev_reset_fan` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2543,11 +2800,14 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_set_clk_freq
+
+### amdsmi_dev_set_clk_freq
+
 Description: Control the set of allowed frequencies that can be used for the
 specified clock
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `clk_type` the type of clock for which the set of frequencies will be modified
 as AmdSmiClkType
@@ -2557,12 +2817,14 @@ bits of this mask are relevant.
 
 Output: None
 
-Exceptions that can be thrown by ` amdsmi_dev_set_clk_freq` function:
+Exceptions that can be thrown by `amdsmi_dev_set_clk_freq` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2575,22 +2837,27 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_set_overdrive_level_v1
+
+### amdsmi_dev_set_overdrive_level_v1
+
 Description: Set the overdrive percent associated with the device with provided
 device handle with the provided value
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `overdrive_value` value to which the overdrive level should be set
 
 Output: None
 
-Exceptions that can be thrown by ` amdsmi_dev_set_overdrive_level_v1` function:
+Exceptions that can be thrown by `amdsmi_dev_set_overdrive_level_v1` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2602,22 +2869,27 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-##  amdsmi_dev_set_overdrive_level
+
+### amdsmi_dev_set_overdrive_level
+
 Description: **deprecated** Set the overdrive percent associated with the
 device with provided device handle with the provided value
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `overdrive_value` value to which the overdrive level should be set
 
 Output: None
 
-Exceptions that can be thrown by ` amdsmi_dev_set_overdrive_level` function:
+Exceptions that can be thrown by `amdsmi_dev_set_overdrive_level` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2630,10 +2902,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
-##  amdsmi_dev_get_ecc_count
+### amdsmi_dev_get_ecc_count
+
 Description: Retrieve the error counts for a GPU block
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `block` The block for which error counts should be retrieved
 
@@ -2644,12 +2918,14 @@ Field | Description
 `correctable_count`| Count of correctable errors
 `uncorrectable_count`| Count of uncorrectable errors
 
-Exceptions that can be thrown by ` amdsmi_dev_get_ecc_count` function:
+Exceptions that can be thrown by `amdsmi_dev_get_ecc_count` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2663,20 +2939,24 @@ except AmdSmiException as e:
     print(e)
 ```
 
-##  amdsmi_dev_get_ecc_enabled
+### amdsmi_dev_get_ecc_enabled
+
 Description: Retrieve the enabled ECC bit-mask
 
 Input parameters:
+
 * `device_handle` handle for the given device
 
 Output: Enabled ECC bit-mask
 
-Exceptions that can be thrown by ` amdsmi_dev_get_ecc_enabled` function:
+Exceptions that can be thrown by `amdsmi_dev_get_ecc_enabled` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2690,21 +2970,25 @@ except AmdSmiException as e:
     print(e)
 ```
 
-##  amdsmi_dev_get_ecc_status
+### amdsmi_dev_get_ecc_status
+
 Description: Retrieve the ECC status for a GPU block
 
 Input parameters:
+
 * `device_handle` handle for the given device
 * `block` The block for which ECC status should be retrieved
 
 Output: ECC status for a requested GPU block
 
-Exceptions that can be thrown by ` amdsmi_dev_get_ecc_status` function:
+Exceptions that can be thrown by `amdsmi_dev_get_ecc_status` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2718,18 +3002,22 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_status_string
+### amdsmi_status_string
+
 Description: Get a description of a provided AMDSMI error status
 
 Input parameters:
+
 * `status` The error status for which a description is desired
 
 Output: String description of the provided error code
 
 Exceptions that can be thrown by `amdsmi_status_string` function:
+
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     status_str = amdsmi_status_string(ctypes.c_uint32(0))
@@ -2738,7 +3026,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_compute_process_info
+### amdsmi_get_compute_process_info
+
 Description: Get process information about processes currently using GPU
 
 Input parameters: None
@@ -2754,10 +3043,12 @@ Field | Description
 `cu_occupancy` | Compute Unit usage in percents
 
 Exceptions that can be thrown by `amdsmi_get_compute_process_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 
 Example:
+
 ```python
 try:
     procs = amdsmi_get_compute_process_info()
@@ -2767,10 +3058,12 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_compute_process_info_by_pid
+### amdsmi_get_compute_process_info_by_pid
+
 Description: Get process information about processes currently using GPU
 
 Input parameters:
+
 * `pid` The process ID for which process information is being requested
 
 Output: Dict containing a process information
@@ -2784,11 +3077,13 @@ Field | Description
 `cu_occupancy` | Compute Unit usage in percents
 
 Exceptions that can be thrown by `amdsmi_get_compute_process_info_by_pid` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     pid = 0 # << valid pid here
@@ -2798,20 +3093,24 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_get_compute_process_gpus
+### amdsmi_get_compute_process_gpus
+
 Description: Get the device indices currently being used by a process
 
 Input parameters:
+
 * `pid` The process id of the process for which the number of gpus currently being used is requested
 
 Output: List of indices of devices currently being used by the process
 
 Exceptions that can be thrown by `amdsmi_get_compute_process_gpus` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     pid = 0 # << valid pid here
@@ -2821,20 +3120,24 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_xgmi_error_status
+### amdsmi_dev_xgmi_error_status
+
 Description: Retrieve the XGMI error status for a device
 
 Input parameters:
+
 * `device_handle` handle for the given device
 
 Output: XGMI error status for a requested device
 
 Exceptions that can be thrown by `amdsmi_dev_xgmi_error_status` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2848,20 +3151,24 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_reset_xgmi_error
+### amdsmi_dev_reset_xgmi_error
+
 Description: Reset the XGMI error status for a device
 
 Input parameters:
+
 * `device_handle` handle for the given device
 
 Output: None
 
 Exceptions that can be thrown by `amdsmi_dev_reset_xgmi_error` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2873,7 +3180,9 @@ try:
 except AmdSmiException as e:
     print(e)
 ```
-## amdsmi_dev_get_vendor_name
+
+### amdsmi_dev_get_vendor_name
+
 Description: Returns the device vendor name
 
 Input parameters:
@@ -2883,11 +3192,13 @@ Input parameters:
 Output: device vendor name
 
 Exceptions that can be thrown by `amdsmi_dev_get_vendor_name` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2901,7 +3212,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_get_id
+### amdsmi_dev_get_id
+
 Description: Get the device id associated with the device with provided device handler
 
 Input parameters:
@@ -2911,11 +3223,13 @@ Input parameters:
 Output: device id
 
 Exceptions that can be thrown by `amdsmi_dev_get_id` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2929,7 +3243,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_get_vram_vendor
+### amdsmi_dev_get_vram_vendor
+
 Description: Get the vram vendor string of a gpu device.
 
 Input parameters:
@@ -2939,11 +3254,13 @@ Input parameters:
 Output: vram vendor
 
 Exceptions that can be thrown by `amdsmi_dev_get_vram_vendor` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2957,7 +3274,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_get_drm_render_minor
+### amdsmi_dev_get_drm_render_minor
+
 Description: Get the drm minor number associated with this device.
 
 Input parameters:
@@ -2967,11 +3285,13 @@ Input parameters:
 Output: drm minor number
 
 Exceptions that can be thrown by `amdsmi_dev_get_drm_render_minor` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -2985,7 +3305,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_dev_get_subsystem_id
+### amdsmi_dev_get_subsystem_id
+
 Description: Get the subsystem device id associated with the device with provided device handle.
 
 Input parameters:
@@ -2995,11 +3316,13 @@ Input parameters:
 Output: subsystem device id
 
 Exceptions that can be thrown by `amdsmi_dev_get_subsystem_id` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -3013,8 +3336,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_dev_get_subsystem_name
 
-## amdsmi_dev_get_subsystem_name
 Description: Get the name string for the device subsytem
 
 Input parameters:
@@ -3024,11 +3347,13 @@ Input parameters:
 Output: device subsytem
 
 Exceptions that can be thrown by `amdsmi_dev_get_subsystem_name` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -3042,18 +3367,20 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_get_version
 
-## amdsmi_get_version
 Description: Get the build version information for the currently running build of AMDSMI.
 
 Output: amdsmi build version
 
 Exceptions that can be thrown by `amdsmi_get_version` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -3067,8 +3394,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_get_version_str
 
-## amdsmi_get_version_str
 Description: Get the driver version string for the current system.
 
 Input parameters:
@@ -3078,11 +3405,13 @@ Input parameters:
 Output: driver version string
 
 Exceptions that can be thrown by `amdsmi_get_version_str` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -3096,8 +3425,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_topo_get_numa_node_number
 
-## amdsmi_topo_get_numa_node_number
 Description: Retrieve the NUMA CPU node number for a device
 
 Input parameters:
@@ -3107,11 +3436,13 @@ Input parameters:
 Output: node number of NUMA CPU for the device
 
 Exceptions that can be thrown by `amdsmi_topo_get_numa_node_number` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -3125,7 +3456,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
-## amdsmi_topo_get_link_weight
+### amdsmi_topo_get_link_weight
+
 Description: Retrieve the weight for a connection between 2 GPUs.
 
 Input parameters:
@@ -3136,11 +3468,13 @@ Input parameters:
 Output: the weight for a connection between 2 GPUs
 
 Exceptions that can be thrown by `amdsmi_topo_get_link_weight` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -3155,8 +3489,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_get_minmax_bandwidth
 
-##  amdsmi_get_minmax_bandwidth
 Description: Retreive minimal and maximal io link bandwidth between 2 GPUs.
 
 Input parameters:
@@ -3171,12 +3505,14 @@ Field | Description
 `min_bandwidth` | minimal bandwidth for the connection
 `max_bandwidth` | maximal bandwidth for the connection
 
-Exceptions that can be thrown by ` amdsmi_get_minmax_bandwidth` function:
+Exceptions that can be thrown by `amdsmi_get_minmax_bandwidth` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -3192,8 +3528,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_topo_get_link_type
 
-## amdsmi_topo_get_link_type
 Description: Retrieve the hops and the connection type between 2 GPUs
 
 Input parameters:
@@ -3209,11 +3545,13 @@ Field | Description
 `type` | the connection type
 
 Exceptions that can be thrown by `amdsmi_topo_get_link_type` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -3229,8 +3567,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_is_P2P_accessible
 
-## amdsmi_is_P2P_accessible
 Description: Return P2P availability status between 2 GPUs
 
 Input parameters:
@@ -3241,11 +3579,13 @@ Input parameters:
 Output: P2P availability status between 2 GPUs
 
 Exceptions that can be thrown by `amdsmi_is_P2P_accessible` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()
@@ -3260,8 +3600,8 @@ except AmdSmiException as e:
     print(e)
 ```
 
+### amdsmi_get_xgmi_info
 
-## amdsmi_get_xgmi_info
 Description: Returns XGMI information for the GPU.
 
 Input parameters:
@@ -3277,13 +3617,14 @@ Field | Description
 `xgmi_node_id` | xgmi node id
 `index` | index
 
-
 Exceptions that can be thrown by `amdsmi_get_xgmi_info` function:
+
 * `AmdSmiLibraryException`
 * `AmdSmiRetryException`
 * `AmdSmiParameterException`
 
 Example:
+
 ```python
 try:
     devices = amdsmi_get_device_handles()

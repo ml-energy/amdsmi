@@ -1,6 +1,6 @@
 
 #
-# Copyright (C) 2022 Advanced Micro Devices. All rights reserved.
+# Copyright (C) 2023 Advanced Micro Devices. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -23,7 +23,7 @@
 import os
 # -*- coding: utf-8 -*-
 #
-# TARGET arch is: ['-I/usr/lib/llvm-6.0/lib/clang/6.0.0/include']
+# TARGET arch is: ['-I/usr/lib/llvm-14/lib/clang/14.0.0/include']
 # WORD_SIZE is: 8
 # POINTER_SIZE is: 8
 # LONGDOUBLE_SIZE is: 16
@@ -165,10 +165,28 @@ def char_pointer_cast(string, encoding='utf-8'):
     return ctypes.cast(string, ctypes.POINTER(ctypes.c_char))
 
 
-
+### Match edits in generator.py from start to end
+### Start match
 _libraries = {}
-_libraries['libamd_smi.so'] = ctypes.CDLL(os.path.join(os.environ["ROCM_PATH"], 'lib', 'libamd_smi.so'))
+from pathlib import Path
+libamd_smi_cpack = Path("@CPACK_PACKAGING_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/libamd_smi.so")
+libamd_smi_optrocm = Path("/opt/rocm/lib/libamd_smi.so")
+libamd_smi_parent_dir = Path(__file__).resolve().parent / "libamd_smi.so"
+libamd_smi_cwd = Path(os.environ["ROCM_PATH"]) / "lib" / "libamd_smi.so"
 
+if libamd_smi_cpack.is_file():
+    # try to find library in install directory provided by CMake
+    _libraries['libamd_smi.so'] = ctypes.CDLL(libamd_smi_cpack)
+elif libamd_smi_optrocm.is_file():
+    # try /opt/rocm/lib as a fallback
+    _libraries['libamd_smi.so'] = ctypes.CDLL(libamd_smi_optrocm)
+elif libamd_smi_parent_dir.is_file():
+    # try to fall back to parent directory
+    _libraries['libamd_smi.so'] = ctypes.CDLL(libamd_smi_parent_dir)
+else:
+    # lastly - search in current working directory
+    _libraries['libamd_smi.so'] = ctypes.CDLL(libamd_smi_cwd)
+### End match
 
 
 # values for enumeration 'c__EA_amdsmi_init_flags_t'
@@ -697,6 +715,16 @@ amdsmi_process_handle = ctypes.c_uint32
 class struct_c__SA_amdsmi_proc_info_t(Structure):
     pass
 
+class struct_c__SA_amdsmi_proc_info_t_1(Structure):
+    pass
+
+struct_c__SA_amdsmi_proc_info_t_1._pack_ = 1 # source:False
+struct_c__SA_amdsmi_proc_info_t_1._fields_ = [
+    ('gtt_mem', ctypes.c_uint64),
+    ('cpu_mem', ctypes.c_uint64),
+    ('vram_mem', ctypes.c_uint64),
+]
+
 class struct_c__SA_amdsmi_proc_info_t_0(Structure):
     pass
 
@@ -707,16 +735,6 @@ struct_c__SA_amdsmi_proc_info_t_0._fields_ = [
     ('dma', ctypes.c_uint64),
     ('enc', ctypes.c_uint64),
     ('dec', ctypes.c_uint64),
-]
-
-class struct_c__SA_amdsmi_proc_info_t_1(Structure):
-    pass
-
-struct_c__SA_amdsmi_proc_info_t_1._pack_ = 1 # source:False
-struct_c__SA_amdsmi_proc_info_t_1._fields_ = [
-    ('gtt_mem', ctypes.c_uint64),
-    ('cpu_mem', ctypes.c_uint64),
-    ('vram_mem', ctypes.c_uint64),
 ]
 
 struct_c__SA_amdsmi_proc_info_t._pack_ = 1 # source:False
