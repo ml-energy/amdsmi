@@ -23,22 +23,58 @@
 from .amdsmi_interface import amdsmi_init
 from .amdsmi_interface import amdsmi_shut_down
 
-# Device Descovery
+# Device Discovery
 from .amdsmi_interface import amdsmi_get_processor_type
 from .amdsmi_interface import amdsmi_get_processor_handles
 from .amdsmi_interface import amdsmi_get_socket_handles
 from .amdsmi_interface import amdsmi_get_socket_info
+
+# ESMI Dependent Functions
+try:
+    from .amdsmi_interface import amdsmi_get_cpusocket_handles
+    from .amdsmi_interface import amdsmi_get_cpusocket_info
+    from .amdsmi_interface import amdsmi_get_cpucore_handles
+    from .amdsmi_interface import amdsmi_get_cpu_hsmp_proto_ver
+    from .amdsmi_interface import amdsmi_get_cpu_smu_fw_version
+    from .amdsmi_interface import amdsmi_get_cpu_core_energy
+    from .amdsmi_interface import amdsmi_get_cpu_socket_energy
+    from .amdsmi_interface import amdsmi_get_cpu_prochot_status
+    from .amdsmi_interface import amdsmi_get_cpu_fclk_mclk
+    from .amdsmi_interface import amdsmi_get_cpu_cclk_limit
+    from .amdsmi_interface import amdsmi_get_cpu_socket_current_active_freq_limit
+    from .amdsmi_interface import amdsmi_get_cpu_socket_freq_range
+    from .amdsmi_interface import amdsmi_get_cpu_core_current_freq_limit
+    from .amdsmi_interface import amdsmi_get_cpu_socket_power
+    from .amdsmi_interface import amdsmi_get_cpu_socket_power_cap
+    from .amdsmi_interface import amdsmi_get_cpu_socket_power_cap_max
+    from .amdsmi_interface import amdsmi_get_cpu_pwr_svi_telemetry_all_rails
+    from .amdsmi_interface import amdsmi_set_cpu_socket_power_cap
+    from .amdsmi_interface import amdsmi_set_cpu_pwr_efficiency_mode
+    from .amdsmi_interface import amdsmi_get_cpu_core_boostlimit
+    from .amdsmi_interface import amdsmi_get_cpu_socket_c0_residency
+    from .amdsmi_interface import amdsmi_set_cpu_core_boostlimit
+    from .amdsmi_interface import amdsmi_set_cpu_socket_boostlimit
+    from .amdsmi_interface import amdsmi_get_cpu_ddr_bw
+    from .amdsmi_interface import amdsmi_get_cpu_socket_temperature
+    from .amdsmi_interface import amdsmi_get_cpu_dimm_temp_range_and_refresh_rate
+    from .amdsmi_interface import amdsmi_get_cpu_dimm_power_consumption
+    from .amdsmi_interface import amdsmi_get_cpu_dimm_thermal_sensor
+    from .amdsmi_interface import amdsmi_set_cpu_xgmi_width
+except AttributeError:
+    pass
 
 from .amdsmi_interface import amdsmi_get_gpu_device_bdf
 from .amdsmi_interface import amdsmi_get_gpu_device_uuid
 from .amdsmi_interface import amdsmi_get_processor_handle_from_bdf
 
 # # SW Version Information
-from .amdsmi_interface import amdsmi_get_gpu_driver_version
+from .amdsmi_interface import amdsmi_get_gpu_driver_info
 
 # # ASIC and Bus Static Information
 from .amdsmi_interface import amdsmi_get_gpu_asic_info
 from .amdsmi_interface import amdsmi_get_power_cap_info
+from .amdsmi_interface import amdsmi_get_gpu_vram_info
+from .amdsmi_interface import amdsmi_get_gpu_cache_info
 
 # # Microcode and VBIOS Information
 from .amdsmi_interface import amdsmi_get_gpu_vbios_info
@@ -65,6 +101,7 @@ from .amdsmi_interface import amdsmi_get_gpu_total_ecc_count
 from .amdsmi_interface import amdsmi_get_gpu_board_info
 
 # # Ras Information
+from .amdsmi_interface import amdsmi_get_gpu_ras_feature_info
 from .amdsmi_interface import amdsmi_get_gpu_ras_block_features_enabled
 
 # # Unsupported Functions In Virtual Environment
@@ -93,13 +130,12 @@ from .amdsmi_interface import amdsmi_get_gpu_volt_metric
 # # Clock, Power and Performance Query
 from .amdsmi_interface import amdsmi_get_utilization_count
 from .amdsmi_interface import amdsmi_get_gpu_perf_level
-from .amdsmi_interface import amdsmi_set_gpu_perf_determinism_mode
 from .amdsmi_interface import amdsmi_get_gpu_overdrive_level
 from .amdsmi_interface import amdsmi_get_clk_freq
 from .amdsmi_interface import amdsmi_get_gpu_od_volt_info
 from .amdsmi_interface import amdsmi_get_gpu_metrics_info
 from .amdsmi_interface import amdsmi_get_gpu_od_volt_curve_regions
-from .amdsmi_interface import amdsmi_get_gpu_power_profile_presets
+from .amdsmi_interface import amdsmi_is_gpu_power_management_enabled
 
 # # Performance Counters
 from .amdsmi_interface import amdsmi_gpu_counter_group_supported
@@ -153,10 +189,63 @@ from .amdsmi_interface import amdsmi_get_lib_version
 # # Hardware topology query
 from .amdsmi_interface import amdsmi_topo_get_numa_node_number
 from .amdsmi_interface import amdsmi_topo_get_link_weight
-from .amdsmi_interface import amdsmi_get_minmax_bandwith_between_processors
+from .amdsmi_interface import amdsmi_get_minmax_bandwidth_between_processors
 from .amdsmi_interface import amdsmi_topo_get_link_type
 from .amdsmi_interface import amdsmi_is_P2P_accessible
 from .amdsmi_interface import amdsmi_get_xgmi_info
+
+# # Individual GPU Metrics Functions
+from .amdsmi_interface import amdsmi_get_gpu_metrics_temp_hotspot
+from .amdsmi_interface import amdsmi_get_gpu_metrics_temp_mem
+from .amdsmi_interface import amdsmi_get_gpu_metrics_temp_vrsoc
+from .amdsmi_interface import amdsmi_get_gpu_metrics_curr_socket_power
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_gfx_activity
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_umc_activity
+from .amdsmi_interface import amdsmi_get_gpu_metrics_energy_acc
+from .amdsmi_interface import amdsmi_get_gpu_metrics_system_clock_counter
+from .amdsmi_interface import amdsmi_get_gpu_metrics_firmware_timestamp
+from .amdsmi_interface import amdsmi_get_gpu_metrics_throttle_status
+from .amdsmi_interface import amdsmi_get_gpu_metrics_pcie_link_width
+from .amdsmi_interface import amdsmi_get_gpu_metrics_pcie_link_speed
+from .amdsmi_interface import amdsmi_get_gpu_metrics_xgmi_link_width
+from .amdsmi_interface import amdsmi_get_gpu_metrics_xgmi_link_speed
+from .amdsmi_interface import amdsmi_get_gpu_metrics_gfxclk_lock_status
+from .amdsmi_interface import amdsmi_get_gpu_metrics_gfx_activity_acc
+from .amdsmi_interface import amdsmi_get_gpu_metrics_mem_activity_acc
+from .amdsmi_interface import amdsmi_get_gpu_metrics_pcie_bandwidth_acc
+from .amdsmi_interface import amdsmi_get_gpu_metrics_pcie_bandwidth_inst
+from .amdsmi_interface import amdsmi_get_gpu_metrics_pcie_l0_recov_count_acc
+from .amdsmi_interface import amdsmi_get_gpu_metrics_pcie_replay_count_acc
+from .amdsmi_interface import amdsmi_get_gpu_metrics_pcie_replay_rover_count_acc
+from .amdsmi_interface import amdsmi_get_gpu_metrics_curr_uclk
+from .amdsmi_interface import amdsmi_get_gpu_metrics_temp_hbm
+from .amdsmi_interface import amdsmi_get_gpu_metrics_vcn_activity
+from .amdsmi_interface import amdsmi_get_gpu_metrics_xgmi_read_data
+from .amdsmi_interface import amdsmi_get_gpu_metrics_xgmi_write_data
+from .amdsmi_interface import amdsmi_get_gpu_metrics_curr_gfxclk
+from .amdsmi_interface import amdsmi_get_gpu_metrics_curr_socclk
+from .amdsmi_interface import amdsmi_get_gpu_metrics_curr_vclk0
+from .amdsmi_interface import amdsmi_get_gpu_metrics_curr_dclk0
+from .amdsmi_interface import amdsmi_get_gpu_metrics_temp_edge
+from .amdsmi_interface import amdsmi_get_gpu_metrics_temp_vrgfx
+from .amdsmi_interface import amdsmi_get_gpu_metrics_temp_vrmem
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_mm_activity
+from .amdsmi_interface import amdsmi_get_gpu_metrics_curr_vclk1
+from .amdsmi_interface import amdsmi_get_gpu_metrics_curr_dclk1
+from .amdsmi_interface import amdsmi_get_gpu_metrics_indep_throttle_status
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_socket_power
+from .amdsmi_interface import amdsmi_get_gpu_metrics_curr_fan_speed
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_gfx_clock_frequency
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_soc_clock_frequency
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_uclock_frequency
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_vclock0_frequency
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_dclock0_frequency
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_vclock1_frequency
+from .amdsmi_interface import amdsmi_get_gpu_metrics_avg_dclock1_frequency
+from .amdsmi_interface import amdsmi_get_gpu_metrics_volt_soc
+from .amdsmi_interface import amdsmi_get_gpu_metrics_volt_gfx
+from .amdsmi_interface import amdsmi_get_gpu_metrics_volt_mem
+from .amdsmi_interface import amdsmi_get_gpu_metrics_header_info
 
 # # Enums
 from .amdsmi_interface import AmdSmiInitFlags
@@ -193,4 +282,3 @@ from .amdsmi_exception import AmdSmiKeyException
 from .amdsmi_exception import AmdSmiBdfFormatException
 from .amdsmi_exception import AmdSmiTimeoutException
 from .amdsmi_exception import AmdSmiException
-from .amdsmi_exception import AmdSmiRetCode
