@@ -37,7 +37,7 @@ function fix_amdsmi_version {
 
     # Prepend notice to the beginning of README.md
     sed -i '' 's/amdsmi\/README.md/README.md/g' pyproject.toml
-    (echo -e 'This is an unofficial distribution of the official Python wrapper for amdsmi.\n\nDear AMD: Please contact Jae-Won Chung <jwnchung@umich.edu> to take over the repository when you would like to distribute official bindings under this project name.\n\n'; cat README.md) > README-new.md
+    (echo -e 'This is an unofficial distribution of the official Python wrapper for amdsmi. See https://github.com/ml-energy/amdsmi for distribution scripts and source code.\n\nAMD -- Please contact Parth Raut (<praut@umich.edu>) and Jae-Won Chung (<jwnchung@umich.edu>) to take over the repository when you would like to distribute official bindings under this project name.\n\n'; cat README.md) > README-new.md
     mv README-new.md README.md
 
 
