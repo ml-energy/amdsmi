@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='amdsmi',
-    version='5.5.0',
+    version='5.5.1',
     description="SMI LIB - AMD GPU Monitoring Library",
     long_description=long_description,
     long_description_content_type="text/markdown",
