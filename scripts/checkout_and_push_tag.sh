@@ -25,20 +25,20 @@ function fix_amdsmi_version {
     # Fill in versions
     if compgen -G "*.in" > /dev/null; then
         for file in *.in; do
-            sed -i '' "s/@amd_smi_libraries_VERSION_STRING@/$version/g" $file
+            sed -i "s/@amd_smi_libraries_VERSION_STRING@/$version/g" $file
             mv $file ${file%.in}
         done
     fi
 
     # Make the wrapper look for `libamd_smi.so` inside `$ROCM_PATH`
-    sed -i '' 's/libamd_smi_cwd = Path.cwd()/libamd_smi_cwd = Path(os.environ["ROCM_PATH"]) \/ "lib"/g' amdsmi_wrapper.py
+    sed -i 's/libamd_smi_cwd = Path.cwd()/libamd_smi_cwd = Path(os.environ["ROCM_PATH"]) \/ "lib"/g' amdsmi_wrapper.py
 
     # Copy over the license file
     cp ../LICENSE . 
-    sed -i '' 's/amdsmi\/LICENSE/LICENSE/g' pyproject.toml
+    sed -i 's/amdsmi\/LICENSE/LICENSE/g' pyproject.toml
 
     # Prepend notice to the beginning of README.md
-    sed -i '' 's/amdsmi\/README.md/README.md/g' pyproject.toml
+    sed -i 's/amdsmi\/README.md/README.md/g' pyproject.toml
     (echo -e 'This is an unofficial distribution of the official Python wrapper for amdsmi. See https://github.com/ml-energy/amdsmi for distribution scripts and source code.\n\nAMD -- Please contact Parth Raut (<praut@umich.edu>) and Jae-Won Chung (<jwnchung@umich.edu>) to take over the repository when you would like to distribute official bindings under this project name.\n\n'; cat README.md) > README-new.md
     mv README-new.md README.md
 
