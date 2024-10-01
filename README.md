@@ -22,7 +22,7 @@ pip install amdsmi
 
 ## 📦 Versioning
 
-AMDSMi seems to have two parallel release strategies:  
+AMDSMI seems to have two parallel release strategies:  
 1. AMDSMI package releases, based on year, month, and revision (e.g., 24.5.0).
 2. ROCm-based releases, which is released whenever a new ROCm version is released (e.g., 6.2.2).
 
