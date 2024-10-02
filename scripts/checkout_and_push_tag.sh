@@ -74,7 +74,8 @@ function clone_and_fix_amdsmi {
 
     # Add and commit py-interface
     git add py-interface
-    git commit -m "Add py-interface for version $version"
+    # Allow an empty commit in the edge case that no changes were made in new version
+    git commit --allow-empty -m "Add py-interface for version $version"
 
     # update master
     git push origin master
