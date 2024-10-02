@@ -80,8 +80,6 @@ function clone_and_fix_amdsmi {
     # update master
     git push origin master
 
-    sleep 1 # avoid race condition where github doesn't recognize new tag on push
-
     git tag "$version"
     git push origin "$version"
 }
