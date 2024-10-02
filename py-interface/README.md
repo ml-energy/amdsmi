@@ -1,6 +1,6 @@
-This is an unofficial distribution of the official Python wrapper for amdsmi.
+This is an unofficial distribution of the official Python wrapper for amdsmi. See https://github.com/ml-energy/amdsmi for distribution scripts and source code.
 
-Dear AMD: Please contact Jae-Won Chung <jwnchung@umich.edu> to take over the repository when you would like to distribute official bindings under this project name.
+AMD -- Please contact Parth Raut (<praut@umich.edu>) and Jae-Won Chung (<jwnchung@umich.edu>) to take over the repository when you would like to distribute official bindings under this project name.
 
 
 # AMD SMI Python Library
