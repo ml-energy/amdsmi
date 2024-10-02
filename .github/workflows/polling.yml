@@ -9,6 +9,8 @@ on:
 jobs:
   polling_amdsmi:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Ensure the GITHUB_TOKEN has permission to trigger publish workflow
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
