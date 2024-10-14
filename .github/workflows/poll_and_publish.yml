@@ -30,34 +30,40 @@ jobs:
             else
               echo "tag_published=false" >> $GITHUB_OUTPUT
             fi
-
   publish:
     runs-on: ubuntu-latest
-    if: needs.polling_amdsmi.outputs.tag_published == 'true'  # Run only if a new tag was published
+    needs: polling_amdsmi
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ github.ref }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+      - name: Early exit if tag_published is false
+        run: |
+          if [ "${{ needs.polling_amdsmi.outputs.tag_published }}" == "false" ]; then
+            echo "No new tag published, exiting..."
+            exit 0  # Exits early if tag_published is false
+          fi
 
-    - name: Install dependencies
-      run: |
-        pip install build twine
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-    - name: Build distribution
-      working-directory: ./py-interface
-      run: |
-        python -m build
+      - name: Install dependencies
+        run: |
+          pip install build twine
 
-    - name: Publish to PyPI
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_KEY }}
-      working-directory: ./py-interface
-      run: |
-        twine upload dist/*
+      - name: Build distribution
+        working-directory: ./py-interface
+        run: |
+          python -m build
+
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_KEY }}
+        working-directory: ./py-interface
+        run: |
+          twine upload dist/*
