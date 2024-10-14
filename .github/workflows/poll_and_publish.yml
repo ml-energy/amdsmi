@@ -33,7 +33,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    if: ${{ needs.polling_amdsmi.outputs.tag_published == 'true' }}  # Run only if a new tag was published
+    if: needs.polling_amdsmi.outputs.tag_published == 'true'  # Run only if a new tag was published
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
