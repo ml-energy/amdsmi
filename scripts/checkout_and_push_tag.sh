@@ -7,7 +7,7 @@ function tag_already_published {
     version_number=$1
 
     # get current tags
-    current_tags=$(git tag)
+    current_tags=$(git tag | tr '\n' ' ')
 
     if echo "$current_tags" | grep -q "$version_number"; then
         return 0 # Tag already published (success)
