@@ -109,7 +109,7 @@ if ! tag_already_published "$version_number"; then
     # If tag not already published, call clone_and_fix_amdsmi
     clone_and_fix_amdsmi "$commit_hash" "$version_number"
 
-    return 0
+    exit 0 # Tag published successfully
 fi
 
-return 1
+exit 1 # Tag already published
