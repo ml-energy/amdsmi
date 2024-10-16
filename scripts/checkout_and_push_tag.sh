@@ -84,6 +84,15 @@ function clone_and_fix_amdsmi {
     git push origin "$version"
 }
 
+function push_to_pypi {
+    # Install dependencies
+    pip install build twine
+
+    # Build and push to PyPI
+    python3 -m build
+    python3 -m twine upload dist/*
+}
+
 # AMDSMI Latest Release
 AMDSMI_RELEASE_URL="https://api.github.com/repos/ROCm/amdsmi/releases/latest"
 
@@ -109,7 +118,9 @@ if ! tag_already_published "$version_number"; then
     # If tag not already published, call clone_and_fix_amdsmi
     clone_and_fix_amdsmi "$commit_hash" "$version_number"
 
+    push_to_pypi
+
     exit 0 # Tag published successfully
 fi
 
-exit 1 # Tag already published
+exit 0 # Tag already published
