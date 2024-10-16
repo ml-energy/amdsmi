@@ -85,6 +85,9 @@ function clone_and_fix_amdsmi {
 }
 
 function push_to_pypi {
+    # Move into py-interface directory
+    cd ./py-interface
+
     # Install dependencies
     pip install build twine
 
