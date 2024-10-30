@@ -21,7 +21,7 @@ pip install amdsmi
 > 2. Ensure you have `libamd_smi.so` in your system. It's shipped together with ROCm. Search order:
 >    1. `site-packages/amdsmi/libamd_smi.so` (inside the `amdsmi` installation directory; useful for debugging/dev)
 >    2. If environment variable `ROCM_PATH` is set, `$ROCM_PATH/lib/libamd_smi.so`
->    3. If environment variable `ROCM_PATH` is **not** set, `/opt/rocm/lib/libamd_smi.so`
+>    3. (Since 6.2.3) If environment variable `ROCM_PATH` is **not** set, `/opt/rocm/lib/libamd_smi.so`
 
 ## 📦 Versioning
 
