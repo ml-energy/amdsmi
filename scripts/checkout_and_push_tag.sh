@@ -31,7 +31,7 @@ function fix_amdsmi_version {
     fi
 
     # Make the wrapper look for `libamd_smi.so` inside `$ROCM_PATH`
-    sed -i 's/libamd_smi_cwd = Path.cwd()/libamd_smi_cwd = Path(os.getenv("ROCM_PATH", "/opt/rocm")) \/ "lib"/g' amdsmi_wrapper.py
+    sed -i 's/libamd_smi_cwd = Path.cwd()/libamd_smi_cwd = Path(os.getenv("ROCM_PATH", "\/opt\/rocm")) \/ "lib"/g' amdsmi_wrapper.py
 
     # Copy over the license file
     cp ../LICENSE . 
