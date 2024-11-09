@@ -169,7 +169,7 @@ def char_pointer_cast(string, encoding='utf-8'):
 _libraries = {}
 from pathlib import Path
 libamd_smi_parent_dir = Path(__file__).resolve().parent / "libamd_smi.so"
-libamd_smi_cwd = Path(os.environ["ROCM_PATH"]) / "lib" / "libamd_smi.so"
+libamd_smi_cwd = Path(os.getenv("ROCM_PATH", "/opt/rocm")) / "lib" / "libamd_smi.so"
 
 try:
     if libamd_smi_parent_dir.is_file():
