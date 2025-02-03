@@ -4,11 +4,13 @@ on:
   schedule:
     # Runs at 05:00 UTC every day
     - cron:  '0 5 * * *'
-  workflow_dispatch: # allow for manual trigger
+  workflow_dispatch: # allow manual trigger
 
 jobs:
   polling_amdsmi:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -26,10 +28,7 @@ jobs:
         with:
             python-version: '3.9'
       
-      - name: Fix and publish, iff there exists a tag in rocm/amdsmi that is not here.
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_KEY }}
+      - name: Fix and publish, iff there exists a tag in rocm/amdsmi that is not here
         run: |
             chmod +x ./scripts/checkout_and_push_tag.sh
             ./scripts/checkout_and_push_tag.sh
