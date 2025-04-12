@@ -1,5 +1,4 @@
-#
-# Copyright (C) 2024 Advanced Micro Devices. All rights reserved.
+# Copyright (C) Advanced Micro Devices. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -10,14 +9,13 @@
 #
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-#
+#``
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 # FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#
 
 # Library Version is the tool/amdsmi_interface version
 from ._version import __version__
@@ -41,6 +39,8 @@ try:
     from .amdsmi_interface import amdsmi_get_cpu_smu_fw_version
     from .amdsmi_interface import amdsmi_get_cpu_core_energy
     from .amdsmi_interface import amdsmi_get_cpu_socket_energy
+    from .amdsmi_interface import amdsmi_get_threads_per_core
+    from .amdsmi_interface import amdsmi_get_cpu_hsmp_driver_version
     from .amdsmi_interface import amdsmi_get_cpu_prochot_status
     from .amdsmi_interface import amdsmi_get_cpu_fclk_mclk
     from .amdsmi_interface import amdsmi_get_cpu_cclk_limit
@@ -80,9 +80,10 @@ try:
 except AttributeError:
     pass
 
+from .amdsmi_interface import amdsmi_get_processor_handle_from_bdf
 from .amdsmi_interface import amdsmi_get_gpu_device_bdf
 from .amdsmi_interface import amdsmi_get_gpu_device_uuid
-from .amdsmi_interface import amdsmi_get_processor_handle_from_bdf
+from .amdsmi_interface import amdsmi_get_gpu_enumeration_info
 
 # # SW Version Information
 from .amdsmi_interface import amdsmi_get_gpu_driver_info
@@ -93,6 +94,7 @@ from .amdsmi_interface import amdsmi_get_gpu_kfd_info
 from .amdsmi_interface import amdsmi_get_power_cap_info
 from .amdsmi_interface import amdsmi_get_gpu_vram_info
 from .amdsmi_interface import amdsmi_get_gpu_cache_info
+from .amdsmi_interface import amdsmi_get_gpu_xcd_counter
 
 # # Microcode and VBIOS Information
 from .amdsmi_interface import amdsmi_get_gpu_vbios_info
@@ -107,6 +109,7 @@ from .amdsmi_interface import amdsmi_get_clock_info
 from .amdsmi_interface import amdsmi_get_pcie_info
 from .amdsmi_interface import amdsmi_get_gpu_bad_page_info
 from .amdsmi_interface import amdsmi_get_violation_status
+from .amdsmi_interface import amdsmi_get_gpu_xgmi_link_status
 
 # # Process Information
 from .amdsmi_interface import amdsmi_get_gpu_process_list
@@ -206,9 +209,6 @@ from .amdsmi_interface import amdsmi_get_gpu_vram_vendor
 from .amdsmi_interface import amdsmi_get_gpu_subsystem_id
 from .amdsmi_interface import amdsmi_get_gpu_subsystem_name
 
-# # Version information
-from .amdsmi_interface import amdsmi_get_lib_version
-
 # # Hardware topology query
 from .amdsmi_interface import amdsmi_topo_get_numa_node_number
 from .amdsmi_interface import amdsmi_topo_get_link_weight
@@ -225,9 +225,23 @@ from .amdsmi_interface import amdsmi_set_gpu_compute_partition
 from .amdsmi_interface import amdsmi_get_gpu_memory_partition
 from .amdsmi_interface import amdsmi_set_gpu_memory_partition
 from .amdsmi_interface import amdsmi_get_gpu_accelerator_partition_profile
+from .amdsmi_interface import amdsmi_get_gpu_accelerator_partition_profile_config
+from .amdsmi_interface import amdsmi_get_gpu_memory_partition_config
+from .amdsmi_interface import amdsmi_set_gpu_accelerator_partition_profile
+from .amdsmi_interface import amdsmi_set_gpu_memory_partition_mode
 
 # # Individual GPU Metrics Functions
 from .amdsmi_interface import amdsmi_get_gpu_metrics_header_info
+from .amdsmi_interface import amdsmi_get_gpu_reg_table_info
+from .amdsmi_interface import amdsmi_get_gpu_pm_metrics_info
+
+# # Virtualization Mode Detection
+from .amdsmi_interface import amdsmi_get_gpu_virtualization_mode
+
+# # Functions where library initialization is not needed
+# # Version information
+from .amdsmi_interface import amdsmi_get_lib_version
+from .amdsmi_interface import amdsmi_get_rocm_version
 
 # # Enums
 from .amdsmi_interface import AmdSmiInitFlags
@@ -258,6 +272,9 @@ from .amdsmi_interface import AmdSmiIoLinkType
 from .amdsmi_interface import AmdSmiLinkType
 from .amdsmi_interface import AmdSmiUtilizationCounterType
 from .amdsmi_interface import AmdSmiProcessorType
+from .amdsmi_interface import AmdSmiVirtualizationMode
+from .amdsmi_interface import AmdSmiVramType
+from .amdsmi_interface import AmdSmiVramVendor
 
 # Exceptions
 from .amdsmi_exception import AmdSmiLibraryException
