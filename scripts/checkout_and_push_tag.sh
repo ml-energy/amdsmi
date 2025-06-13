@@ -25,7 +25,7 @@ function fix_amdsmi_version {
     # Fill in versions
     if compgen -G "*.in" > /dev/null; then
         for file in *.in; do
-            sed -i "s/@amd_smi_libraries_VERSION_STRING@/$version/g" $file
+            sed -i "s/@amd_smi_lib_VERSION_STRING@/$version/g" $file
             mv $file ${file%.in}
         done
     fi
