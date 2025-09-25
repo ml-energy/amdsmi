@@ -77,7 +77,6 @@ try:
     from .amdsmi_interface import amdsmi_first_online_core_on_cpu_socket
     from .amdsmi_interface import amdsmi_get_cpu_family
     from .amdsmi_interface import amdsmi_get_cpu_model
-    from .amdsmi_interface import amdsmi_get_cpu_model_name
 except AttributeError:
     pass
 
@@ -85,11 +84,6 @@ from .amdsmi_interface import amdsmi_get_processor_handle_from_bdf
 from .amdsmi_interface import amdsmi_get_gpu_device_bdf
 from .amdsmi_interface import amdsmi_get_gpu_device_uuid
 from .amdsmi_interface import amdsmi_get_gpu_enumeration_info
-
-# # Functions not dependent on ESMI library
-from .amdsmi_interface import amdsmi_get_cpu_socket_count
-from .amdsmi_interface import amdsmi_get_cpu_cores_per_socket
-from .amdsmi_interface import amdsmi_get_cpu_affinity_with_scope
 
 # # SW Version Information
 from .amdsmi_interface import amdsmi_get_gpu_driver_info
@@ -114,7 +108,6 @@ from .amdsmi_interface import amdsmi_get_clock_info
 
 from .amdsmi_interface import amdsmi_get_pcie_info
 from .amdsmi_interface import amdsmi_get_gpu_bad_page_info
-from .amdsmi_interface import amdsmi_get_gpu_bad_page_threshold
 from .amdsmi_interface import amdsmi_get_violation_status
 from .amdsmi_interface import amdsmi_get_gpu_xgmi_link_status
 
@@ -143,7 +136,6 @@ from .amdsmi_interface import amdsmi_set_gpu_od_volt_info
 from .amdsmi_interface import amdsmi_set_gpu_perf_level
 from .amdsmi_interface import amdsmi_get_gpu_power_profile_presets
 from .amdsmi_interface import amdsmi_reset_gpu
-from .amdsmi_interface import amdsmi_gpu_driver_reload
 from .amdsmi_interface import amdsmi_set_gpu_perf_determinism_mode
 from .amdsmi_interface import amdsmi_set_gpu_fan_speed
 from .amdsmi_interface import amdsmi_reset_gpu_fan
@@ -222,7 +214,6 @@ from .amdsmi_interface import amdsmi_get_gpu_subsystem_name
 from .amdsmi_interface import amdsmi_topo_get_numa_node_number
 from .amdsmi_interface import amdsmi_topo_get_link_weight
 from .amdsmi_interface import amdsmi_get_minmax_bandwidth_between_processors
-from .amdsmi_interface import amdsmi_get_link_metrics
 from .amdsmi_interface import amdsmi_topo_get_link_type
 from .amdsmi_interface import amdsmi_topo_get_p2p_status
 from .amdsmi_interface import amdsmi_is_P2P_accessible
@@ -260,9 +251,6 @@ from .amdsmi_interface import AmdSmiDeviceType
 from .amdsmi_interface import AmdSmiMmIp
 from .amdsmi_interface import AmdSmiFwBlock
 from .amdsmi_interface import AmdSmiClkType
-from .amdsmi_interface import AmdSmiClkLimitType
-
-from .amdsmi_interface import AmdSmiRegType
 from .amdsmi_interface import AmdSmiTemperatureType
 from .amdsmi_interface import AmdSmiDevPerfLevel
 from .amdsmi_interface import AmdSmiEventGroup
@@ -281,12 +269,13 @@ from .amdsmi_interface import AmdSmiMemoryType
 from .amdsmi_interface import AmdSmiFreqInd
 from .amdsmi_interface import AmdSmiXgmiStatus
 from .amdsmi_interface import AmdSmiMemoryPageStatus
+from .amdsmi_interface import AmdSmiIoLinkType
 from .amdsmi_interface import AmdSmiLinkType
 from .amdsmi_interface import AmdSmiUtilizationCounterType
 from .amdsmi_interface import AmdSmiProcessorType
 from .amdsmi_interface import AmdSmiVirtualizationMode
 from .amdsmi_interface import AmdSmiVramType
-from .amdsmi_interface import AmdSmiAffinityScope
+from .amdsmi_interface import AmdSmiVramVendor
 
 # Exceptions
 from .amdsmi_exception import AmdSmiLibraryException

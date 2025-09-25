@@ -38,15 +38,8 @@ class AmdSmiLibraryException(AmdSmiException):
             err_code=self.err_code, err_info=self.err_info
         )
 
-    def get_error_info(self, detailed=True):
-        """Get error info, if detailed is True, return full error message, otherwise return short version"""
-        # If detailed is True, return full error message
-        # If detailed is False, return only the error code and a short description
-        if detailed:
-            return self.err_info
-        else:
-            error_out = str(self.err_info).split(" - ")[0]
-            return f"{error_out}"
+    def get_error_info(self):
+        return self.err_info
 
     def get_error_code(self):
         return self.err_code
@@ -73,7 +66,6 @@ class AmdSmiLibraryException(AmdSmiException):
             amdsmi_wrapper.AMDSMI_STATUS_INPUT_OUT_OF_BOUNDS : "AMDSMI_STATUS_INPUT_OUT_OF_BOUNDS - Out of bounds",
             amdsmi_wrapper.AMDSMI_STATUS_INIT_ERROR : "AMDSMI_STATUS_INIT_ERROR - Initialization error",
             amdsmi_wrapper.AMDSMI_STATUS_REFCOUNT_OVERFLOW : "AMDSMI_STATUS_REFCOUNT_OVERFLOW - Internal reference counter exceeded INT32_MAX",
-            amdsmi_wrapper.AMDSMI_STATUS_DIRECTORY_NOT_FOUND : "AMDSMI_STATUS_DIRECTORY_NOT_FOUND - Error when a directory is not found, maps to ENOTDIR",
             amdsmi_wrapper.AMDSMI_STATUS_BUSY : "AMDSMI_STATUS_BUSY - Device busy",
             amdsmi_wrapper.AMDSMI_STATUS_NOT_FOUND : "AMDSMI_STATUS_NOT_FOUND - Device Not found",
             amdsmi_wrapper.AMDSMI_STATUS_NOT_INIT : "AMDSMI_STATUS_NOT_INIT - Device not initialized",
