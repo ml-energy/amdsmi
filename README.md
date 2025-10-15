@@ -1,5 +1,10 @@
 # 🐍 Python Bindings for AMDSMI
 
+> [!IMPORTANT]
+> This used to be a community-maintained Python binding package for AMDSMI. Now, upon AMD's request, we have transferred ownership of the PyPI project `amdsmi` to AMD. This repository is archived and any issues for the Python package `amdsmi` should be directed to the offical [ROCm/amdsmi](https://github.com/ROCm/amdsmi) repository.
+
+## Original REAMDE
+
 Community-maintained Python bindings for [AMDSMI](https://github.com/ROCm/amdsmi).
 
 Whenever a new [release](https://github.com/ROCm/amdsmi/releases) is published to the official AMDSMI repository, we run a simple script to checkout the `py-interface` directory of the tag and push it to this repository and PyPI.
